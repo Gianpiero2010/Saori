@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Para Saori</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+    #login input {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+    }
+    #garden {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top, #1a1a40, #0b0c10);
+      overflow: hidden;
+      z-index: 10;
+      color: white;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .flower {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: url('https://i.imgur.com/OXoC0xL.png') no-repeat center;
+      background-size: contain;
+      bottom: 10px;
+      animation: sway 4s ease-in-out infinite alternate, grow 2s ease-in forwards;
+    }
+    @keyframes grow {
+      from {
+        transform: scaleY(0);
+        opacity: 0;
+      }
+      to {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+    }
+    @keyframes sway {
+      0% { transform: translateX(0px) rotate(0deg); }
+      50% { transform: translateX(5px) rotate(2deg); }
+      100% { transform: translateX(-5px) rotate(-2deg); }
+    }
+    .grass {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to top, #2e8b57, transparent);
+      z-index: 1;
+    }
+    #message {
+      position: absolute;
+      width: 100%;
+      bottom: 40%;
+      text-align: center;
+      font-size: 2em;
+      opacity: 0;
+      z-index: 2;
+    }
+    #final-scene {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top, #000014, #000);
+      z-index: 20;
+    }
+    .silhouettes {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      text-align: center;
+      z-index: 21;
+    }
+    .silhouettes::before {
+      content: "";
+      display: inline-block;
+      width: 120px;
+      height: 100px;
+      background: url('https://i.imgur.com/j2j0j0Z.png') no-repeat center;
+      background-size: contain;
+      opacity: 0.7;
+    }
+    .constellation {
+      position: absolute;
+      top: 20%;
+      width: 100%;
+      text-align: center;
+      font-size: 3em;
+      color: #ffffff;
+      opacity: 0;
+      animation: fadeIn 5s ease-in-out forwards;
+      z-index: 22;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="login">
+    <label for="password">Ingresa la contraseña:</label>
+    <input type="password" id="password" placeholder="DD/MM/AA" />
+  </div>
+
+  <div id="garden">
+    <div id="message"></div>
+    <div class="grass"></div>
+  </div>
+
+  <div id="final-scene">
+    <div class="silhouettes"></div>
+    <div class="constellation">Te amo</div>
+  </div>
+
+  <script>
+    const mensajes = [
+      "Gracias por aparecer en mi vida y mejorarla saori",
+      "ya que cumplimos 1 mes quiero decirte",
+      "que me haces el hombre más feliz cuando estoy a tu lado",
+      "te amo y siempre lo hare",
+      "no olvides que para cualquier cosa que necesites ayuda",
+      "estare ahi",
+      "para ayudarte",
+      "Gracias por ser mi novia",
+      "te adoro",
+      "te amo",
+      "eres la persona más hermosa que eh conocido",
+      "y aunque digas que no eres guapa",
+      "lo eres y nunca lo dejaras de ser",
+      "gracias por estar a mi lado todo este tiempo"
+    ];
+
+    const passwordInput = document.getElementById('password');
+    const garden = document.getElementById('garden');
+    const message = document.getElementById('message');
+    const finalScene = document.getElementById('final-scene');
+
+    passwordInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        if (passwordInput.value === '03/06/25') {
+          document.getElementById('login').style.display = 'none';
+          document.body.style.backgroundColor = '#0b0c10';
+          garden.style.display = 'block';
+          crearEstrellas(100);
+          crearFlores(30);
+          mostrarMensajes();
+        } else {
+          alert('Contraseña incorrecta');
+        }
+      }
+    });
+
+    function crearEstrellas(cantidad) {
+      for (let i = 0; i < cantidad; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.top = Math.random() * window.innerHeight + 'px';
+        star.style.left = Math.random() * window.innerWidth + 'px';
+        star.style.animationDuration = (1 + Math.random() * 2) + 's';
+        document.getElementById('garden').appendChild(star);
+      }
+    }
+
+    function crearFlores(cantidad) {
+      for (let i = 0; i < cantidad; i++) {
+        const flor = document.createElement('div');
+        flor.classList.add('flower');
+        flor.style.left = Math.random() * window.innerWidth + 'px';
+        flor.style.animationDelay = (Math.random() * 2) + 's';
+        document.getElementById('garden').appendChild(flor);
+      }
+    }
+
+    function mostrarMensajes() {
+      let i = 0;
+      function mostrar() {
+        if (i < mensajes.length) {
+          message.style.opacity = 0;
+          setTimeout(() => {
+            message.textContent = mensajes[i];
+            message.style.opacity = 1;
+            i++;
+            setTimeout(mostrar, 4000);
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            garden.style.display = 'none';
+            finalScene.style.display = 'block';
+          }, 4000);
+        }
+      }
+      mostrar();
+    }
+  </script>
+</body>
+</html>
+</html>
