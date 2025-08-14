@@ -1,1 +1,98 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Acceso Mes 2</title>
+<style>
+  body {
+    background-color: black;
+    color: #00ff00;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  h1 {
+    text-shadow: 0 0 10px #00ff00;
+    animation: parpadeo 1.5s infinite alternate;
+  }
+
+  @keyframes parpadeo {
+    0% { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+
+  input {
+    background-color: black;
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-size: 1.5em;
+    padding: 10px;
+    outline: none;
+    text-align: center;
+  }
+
+  .lluvia {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: -1;
+  }
+  .char {
+    position: absolute;
+    color: #00ff00;
+    font-family: monospace;
+    animation: caer 2s linear infinite;
+  }
+  @keyframes caer {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+</style>
+</head>
+<body>
+  <h1>Ingrese la contraseña</h1>
+  <input type="password" id="password" placeholder="Contraseña...">
+
+  <div class="lluvia" id="lluvia"></div>
+
+  <script>
+    // Animación tipo Matrix
+    function crearLluvia() {
+      const lluvia = document.getElementById('lluvia');
+      for (let i = 0; i < 50; i++) {
+        const char = document.createElement('div');
+        char.classList.add('char');
+        char.style.left = `${Math.random() * 100}vw`;
+        char.style.fontSize = `${Math.random() * 20 + 10}px`;
+        char.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        char.textContent = String.fromCharCode(0x30A0 + Math.random() * 96);
+        lluvia.appendChild(char);
+      }
+    }
+    crearLluvia();
+
+    // Verificar contraseña
+    document.getElementById('password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const pass = this.value.trim().toLowerCase();
+        if (pass === 'mes 2') {
+          window.location.href = 'mes2.html';
+        } else {
+          alert('Contraseña incorrecta');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
