@@ -1,138 +1,287 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Mes 2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to top, #1b1b3a, #ff6f61, #ff9a76, #ffe29f);
-    font-family: 'Courier New', monospace;
-    color: white;
-    flex-direction: column;
+  :root{
+    --txt: #ffffff;
+    --glow1: #ff99b3;
+    --glow2: #ff3b6b;
   }
-
-  canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
+  *{box-sizing:border-box}
+  html,body{
+    margin:0; height:100%; overflow:hidden; font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    color:var(--txt);
+    background:#000; /* canvas pinta el fondo */
   }
-
-  .mensaje {
-    position: relative;
-    z-index: 10;
-    font-size: 2em;
+  /* Capas */
+  #scene{ position:fixed; inset:0; z-index:0; }
+  .ui { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:2; pointer-events:none; }
+  .panel{
+    max-width: min(900px, 92vw);
+    padding: 20px 24px;
+    border-radius: 20px;
+    background: rgba(0,0,0,.28);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  }
+  #mensaje{
+    font-size: clamp(18px, 2.2vw, 28px);
+    line-height: 1.5;
     text-align: center;
-    white-space: pre-line;
-    opacity: 0;
-    animation: aparecer 2s forwards;
-    animation-delay: 1s;
+    white-space: pre-wrap;
+  }
+  .line{
+    opacity:0; transform: translateY(6px);
+    animation: fadeInUp .6s ease forwards;
+  }
+  @keyframes fadeInUp {
+    to { opacity:1; transform: translateY(0); }
   }
 
-  @keyframes aparecer {
-    to { opacity: 1; }
+  /* TE AMO */
+  #teamo{
+    position: fixed;
+    top: 6vh; left:0; right:0;
+    margin:auto; text-align:center;
+    font-weight: 800;
+    font-size: clamp(40px, 6vw, 90px);
+    letter-spacing: .04em;
+    opacity:0; filter: drop-shadow(0 0 10px var(--glow1));
+    text-shadow: 0 0 20px var(--glow1), 0 0 40px var(--glow2);
+    z-index: 3;
+  }
+  .show-teamo{
+    animation: teamoIn 1.6s ease forwards, pulse 2.2s ease-in-out 1.6s 3;
+  }
+  @keyframes teamoIn { from{opacity:0; transform:translateY(-12px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes pulse { 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.04); } }
+
+  /* Delfines (SVG puro) */
+  .dolphins{
+    position:fixed; inset:0; pointer-events:none; z-index:3; opacity:0;
+  }
+  .dolphins.show{ opacity:1; transition: opacity .6s ease; }
+
+  /* Pistas para la animación de salto */
+  .d-track{ position:absolute; bottom: 35vh; width: 100px; height: 60px; }
+  .d1 { left: 22vw; }
+  .d2 { left: 60vw; animation-delay: .8s; }
+
+  /* La forma del delfín es un SVG escalable dentro de cada pista */
+  .dolphin-shape{
+    width: 100%; height:100%;
+    transform-origin: 50% 100%;
+    animation: jump 2.8s ease-in-out 0s 2;  /* salta 2 veces */
+  }
+  .d2 .dolphin-shape{ animation-delay: .8s; }
+
+  /* Trayectoria y giro del delfín */
+  @keyframes jump{
+    0%   { transform: translateX(0) translateY(0) rotate(0deg); opacity: .95; }
+    25%  { transform: translateX(60px) translateY(-90px) rotate(18deg); opacity: 1; }
+    50%  { transform: translateX(120px) translateY(0) rotate(0deg); opacity: .95; }
+    70%  { transform: translateX(160px) translateY(-65px) rotate(14deg); opacity: 1; }
+    100% { transform: translateX(220px) translateY(0) rotate(0deg); opacity: .95; }
   }
 
-  .te-amo {
-    font-size: 3em;
-    color: #ffb6c1;
-    text-shadow: 0 0 20px #ff6699, 0 0 40px #ff3366;
-    opacity: 0;
-    animation: aparecer 2s forwards;
-    animation-delay: 8s;
+  /* Sutil espuma cuando cae (círculo blanco) */
+  .splash{
+    position:absolute; bottom:0; left:0;
+    width:14px; height:14px; border-radius:50%;
+    background: rgba(255,255,255,.65);
+    transform: translate(110px, -4px) scale(0);
+    animation: splash .9s ease .7s 2;
+    filter: blur(1px);
+  }
+  .d2 .splash{ animation-delay: 1.5s; }
+  @keyframes splash{
+    0%   { transform: translate(110px, -4px) scale(0); opacity: .8; }
+    50%  { transform: translate(110px, -8px) scale(1); opacity: .9; }
+    100% { transform: translate(110px, 0px) scale(0); opacity: 0; }
   }
 </style>
 </head>
 <body>
 
-<canvas id="escena"></canvas>
+<canvas id="scene"></canvas>
 
-<div class="mensaje">
-  Feliz mes 2, mi amor ❤️<br>
-  Cada día contigo es un nuevo amanecer<br>
-  y cada atardecer me recuerda<br>
-  lo afortunado que soy de tenerte.
+<div class="ui">
+  <div class="panel">
+    <div id="mensaje"></div>
+  </div>
 </div>
 
-<div class="te-amo">TE AMO ❤️</div>
+<div id="teamo">TE AMO</div>
+
+<!-- Contenedor de delfines -->
+<div class="dolphins" id="dolphins">
+  <div class="d-track d1">
+    <div class="dolphin-shape">
+      <!-- Delfín (SVG puro, sin imágenes) -->
+      <svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+        <!-- cuerpo -->
+        <path d="M10,70 C30,40 80,30 120,50 C150,65 170,55 185,52
+                 C170,70 145,80 120,78 C85,75 60,85 30,85 C20,85 12,80 10,70 Z"
+              fill="#cfd8dc"/>
+        <!-- lomo y cabeza -->
+        <path d="M25,68 C50,45 95,38 130,50 C150,56 165,55 178,52
+                 C165,60 150,66 130,64 C96,61 70,70 40,76 Z"
+              fill="#b0bec5"/>
+        <!-- aleta dorsal -->
+        <path d="M90,52 C96,42 110,34 112,48 C104,50 97,52 90,52 Z" fill="#90a4ae"/>
+        <!-- aleta cola -->
+        <path d="M180,52 C188,50 196,56 196,63 C190,62 185,60 180,58 Z" fill="#b0bec5"/>
+        <!-- aletas pectorales -->
+        <path d="M75,72 C80,76 85,82 75,84 C70,82 70,76 75,72 Z" fill="#90a4ae"/>
+        <!-- ojo -->
+        <circle cx="60" cy="58" r="2.3" fill="#263238"/>
+      </svg>
+    </div>
+    <div class="splash"></div>
+  </div>
+
+  <div class="d-track d2">
+    <div class="dolphin-shape">
+      <svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+        <path d="M10,70 C30,40 80,30 120,50 C150,65 170,55 185,52
+                 C170,70 145,80 120,78 C85,75 60,85 30,85 C20,85 12,80 10,70 Z"
+              fill="#cfd8dc"/>
+        <path d="M25,68 C50,45 95,38 130,50 C150,56 165,55 178,52
+                 C165,60 150,66 130,64 C96,61 70,70 40,76 Z"
+              fill="#b0bec5"/>
+        <path d="M90,52 C96,42 110,34 112,48 C104,50 97,52 90,52 Z" fill="#90a4ae"/>
+        <path d="M180,52 C188,50 196,56 196,63 C190,62 185,60 180,58 Z" fill="#b0bec5"/>
+        <path d="M75,72 C80,76 85,82 75,84 C70,82 70,76 75,72 Z" fill="#90a4ae"/>
+        <circle cx="60" cy="58" r="2.3" fill="#263238"/>
+      </svg>
+    </div>
+    <div class="splash"></div>
+  </div>
+</div>
 
 <script>
-  const canvas = document.getElementById('escena');
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+/* ========= CANVAS: CIELO, SOL, MAR, OLAS ========= */
+const canvas = document.getElementById('scene');
+const c = canvas.getContext('2d');
+function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
 
-  function dibujarAtardecer() {
-    const w = canvas.width;
-    const h = canvas.height;
+let start = performance.now();
+function draw(t){
+  const w = canvas.width, h = canvas.height;
+  const dt = (t - start)/1000;
 
-    // Fondo cielo degradado
-    const grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, '#ffe29f');  // amarillo claro
-    grad.addColorStop(0.3, '#ff9a76'); // naranja
-    grad.addColorStop(0.6, '#ff6f61'); // rojo suave
-    grad.addColorStop(1, '#1b1b3a');  // azul oscuro
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
+  // Cielo degradado atardecer
+  const sky = c.createLinearGradient(0,0,0,h);
+  sky.addColorStop(0,   '#FFE8A3'); // alto: dorado
+  sky.addColorStop(0.35,'#FF9C6B'); // naranja
+  sky.addColorStop(0.65,'#F45B69'); // coral/rojizo
+  sky.addColorStop(1,   '#1b1b3a'); // azul profundo
+  c.fillStyle = sky;
+  c.fillRect(0,0,w,h);
 
-    // Sol con halo
-    const sunX = w / 2;
-    const sunY = h * 0.4 + Math.sin(Date.now() / 2000) * 10;
-    const sunRadius = 70;
+  // Sol con halo y bajada suave
+  const sunBaseY = h*0.38;
+  const sunY = sunBaseY + Math.min(dt*12, h*0.18); // desciende ~lento los primeros segundos
+  const sunX = w/2;
+  const R = Math.max(60, Math.min(90, w*0.06));
 
-    const sunGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunRadius * 2);
-    sunGrad.addColorStop(0, '#fff4cc');
-    sunGrad.addColorStop(0.5, '#ffd27f');
-    sunGrad.addColorStop(1, 'transparent');
-    ctx.fillStyle = sunGrad;
-    ctx.beginPath();
-    ctx.arc(sunX, sunY, sunRadius * 2, 0, Math.PI * 2);
-    ctx.fill();
+  const halo = c.createRadialGradient(sunX, sunY, 0, sunX, sunY, R*2.4);
+  halo.addColorStop(0,   'rgba(255,244,204,0.95)');
+  halo.addColorStop(0.45,'rgba(255,200,120,0.55)');
+  halo.addColorStop(1,   'rgba(255,120,60,0)');
+  c.fillStyle = halo;
+  c.beginPath(); c.arc(sunX, sunY, R*2.2, 0, Math.PI*2); c.fill();
 
-    ctx.fillStyle = '#fff4cc';
-    ctx.beginPath();
-    ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
-    ctx.fill();
+  c.fillStyle = '#FFE9B3';
+  c.beginPath(); c.arc(sunX, sunY, R, 0, Math.PI*2); c.fill();
 
-    // Mar con olas
-    const marY = h * 0.65;
-    const marGrad = ctx.createLinearGradient(0, marY, 0, h);
-    marGrad.addColorStop(0, '#ff6f61');
-    marGrad.addColorStop(0.5, '#1e3f66');
-    marGrad.addColorStop(1, '#0b1d3a');
-    ctx.fillStyle = marGrad;
-    ctx.fillRect(0, marY, w, h - marY);
+  // Mar con reflejos
+  const horizon = h*0.66;
+  const sea = c.createLinearGradient(0,horizon,0,h);
+  sea.addColorStop(0,   '#F06863'); // reflejo cálido
+  sea.addColorStop(0.4, '#1d4166');
+  sea.addColorStop(1,   '#0a1b36');
+  c.fillStyle = sea;
+  c.fillRect(0, horizon, w, h-horizon);
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 5; i++) {
-      ctx.beginPath();
-      for (let x = 0; x <= w; x += 10) {
-        const y = marY + Math.sin((x + Date.now() / 20) / 50 + i) * 5 * (i + 1);
-        ctx.lineTo(x, y);
-      }
-      ctx.stroke();
+  // Olas (líneas senoidales con leve parallax)
+  c.lineWidth = 1.4;
+  for(let i=0;i<6;i++){
+    const amp = 6 + i*2;
+    const k = 0.012 + i*0.004;
+    const speed = 0.8 + i*0.18;
+    c.strokeStyle = `rgba(255,255,255,${0.16 - i*0.02})`;
+    c.beginPath();
+    for(let x=0;x<=w;x+=8){
+      const y = horizon + (i*12) + Math.sin(x*k + t*0.0016*speed)*amp;
+      if(x===0) c.moveTo(x,y); else c.lineTo(x,y);
     }
+    c.stroke();
   }
 
-  function animar() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    dibujarAtardecer();
-    requestAnimationFrame(animar);
-  }
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
 
-  animar();
+/* ========= MENSAJE: LÍNEA POR LÍNEA ========= */
+const texto = [
+  "Hoy cumplimos 2 meses juntos…",
+  "",
+  "Y aunque el tiempo parezca corto,",
+  "para mí ha sido suficiente para darme cuenta",
+  "de lo afortunado que soy de tenerte en mi vida.",
+  "",
+  "En cada sonrisa tuya, encuentro paz.",
+  "En cada palabra tuya, encuentro alegría.",
+  "En cada momento contigo,",
+  "siento que el mundo es un lugar más bonito.",
+  "",
+  "Gracias por estos días",
+  "llenos de risas,",
+  "abrazos",
+  "y recuerdos que guardaré para siempre.",
+  "",
+  "Te prometo seguir cuidándote,",
+  "respetándote",
+  "y queriéndote cada día más.",
+  "",
+  "Dos meses son solo el inicio…",
+  "y yo quiero que esta historia",
+  "dure para siempre"
+];
 
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
+const cont = document.getElementById('mensaje');
+function mostrarLineas(lines, cb){
+  let i=0;
+  const paso = () => {
+    if(i>=lines.length){ cb && cb(); return; }
+    const p = document.createElement('div');
+    p.className = 'line';
+    p.textContent = lines[i];
+    cont.appendChild(p);
+    // tiempos distintos para líneas vacías vs. texto
+    const delay = (lines[i].trim()==="") ? 350 : 1100;
+    i++;
+    setTimeout(paso, delay);
+  };
+  paso();
+}
+
+const teamo = document.getElementById('teamo');
+const dolphins = document.getElementById('dolphins');
+
+mostrarLineas(texto, () => {
+  // Cuando termina el mensaje:
+  teamo.classList.add('show-teamo');
+  // Mostrar delfines y disparar su animación (2 saltos)
+  dolphins.classList.add('show');
+  // Opcional: ocultarlos tras los saltos (≈6s)
+  setTimeout(()=> { dolphins.style.opacity = 0.0; }, 6500);
+});
 </script>
-
 </body>
 </html>
