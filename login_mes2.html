@@ -4,22 +4,24 @@
 <meta charset="UTF-8">
 <title>Acceso Mes 2</title>
 <style>
-  /* ===== ESTILO MATRIX LOGIN ===== */
   body {
     margin: 0;
     overflow: hidden;
     font-family: monospace;
+    background: black;
+    color: #00ff00;
   }
+  /* Pantalla Matrix */
   #matrixScreen {
-    background-color: black;
+    background: black;
     color: #00ff00;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 100vh;
   }
-  h1 {
+  #matrixScreen h1 {
     text-shadow: 0 0 10px #00ff00;
     animation: parpadeo 1.5s infinite alternate;
   }
@@ -27,100 +29,127 @@
     0% { opacity: 1; }
     100% { opacity: 0.7; }
   }
-  input {
-    background-color: black;
+  #matrixScreen input {
+    background: black;
     border: 2px solid #00ff00;
     color: #00ff00;
     font-size: 1.5em;
     padding: 10px;
-    outline: none;
     text-align: center;
+    outline: none;
   }
   .lluvia {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     pointer-events: none;
-    overflow: hidden;
     z-index: -1;
   }
   .char {
     position: absolute;
     color: #00ff00;
-    animation: caer linear infinite;
+    font-family: monospace;
+    animation: caer 2s linear infinite;
   }
   @keyframes caer {
     0% { transform: translateY(-100%); }
     100% { transform: translateY(100vh); }
   }
 
-  /* ===== ESTILO ATARDECER ===== */
+  /* Atardecer */
   #sunsetScene {
     display: none;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
+    background: linear-gradient(to top, #ff6600, #ffcc66, #87ceeb);
     position: relative;
-    background: linear-gradient(to top, #1e3c72, #2a5298);
     overflow: hidden;
   }
-  /* Mar */
-  .wave {
-    position: absolute;
-    bottom: 0;
-    width: 200%;
-    height: 20%;
-    background: rgba(0, 119, 190, 0.6);
-    border-radius: 100%;
-    animation: waveAnim 8s linear infinite;
-  }
-  .wave:nth-child(2) {
-    bottom: 10px;
-    animation-duration: 10s;
-    background: rgba(0, 150, 255, 0.4);
-  }
-  @keyframes waveAnim {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  /* Sol */
   .sun {
     position: absolute;
     bottom: 20%;
     left: 50%;
     transform: translateX(-50%);
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, #FFD700, #FF4500);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, #ffd700, #ff8c00);
     border-radius: 50%;
-    box-shadow: 0 0 50px #FF8C00;
+    box-shadow: 0 0 60px #ffcc00;
   }
-  /* Nubes */
+  .wave {
+    position: absolute;
+    bottom: 0;
+    width: 200%;
+    height: 20%;
+    background: rgba(0,0,128,0.6);
+    animation: waveMove 8s linear infinite;
+  }
+  .wave:nth-child(2) {
+    bottom: 5%;
+    background: rgba(0,0,180,0.5);
+    animation-duration: 10s;
+  }
+  @keyframes waveMove {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
   .cloud {
     position: absolute;
+    top: 10%;
     background: white;
     border-radius: 50%;
     opacity: 0.8;
-    animation: cloudAnim 60s linear infinite;
+    animation: cloudMove 60s linear infinite;
   }
-  @keyframes cloudAnim {
-    from { transform: translateX(-200px); }
-    to { transform: translateX(120%); }
+  .cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
   }
-  /* Texto */
-  .text-box {
+  .cloud::before {
+    width: 60px;
+    height: 60px;
+    left: -40px;
+    top: 10px;
+  }
+  .cloud::after {
+    width: 50px;
+    height: 50px;
+    left: 40px;
+    top: 20px;
+  }
+  @keyframes cloudMove {
+    from { left: -200px; }
+    to { left: 120%; }
+  }
+  /* Texto romántico */
+  #message {
     position: absolute;
     top: 10%;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    color: white;
     font-size: 1.5em;
+    color: white;
     text-align: center;
+    width: 80%;
+    background: transparent;
+  }
+  /* Te Amo */
+  #love {
+    display: none;
+    position: absolute;
+    bottom: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3em;
+    color: white;
+    text-shadow: 0 0 10px gold, 0 0 20px gold;
+    animation: glow 2s infinite alternate;
+  }
+  @keyframes glow {
+    from { text-shadow: 0 0 10px gold, 0 0 20px gold; }
+    to { text-shadow: 0 0 20px white, 0 0 40px gold; }
   }
   /* Delfines */
   .dolphin {
@@ -128,41 +157,36 @@
     width: 80px;
     height: 40px;
     background: gray;
-    border-radius: 50% 50% 50% 50%;
-    transform: rotate(20deg);
-    animation: dolphinJump 4s ease-in-out infinite;
-    display: none;
+    border-radius: 40px 40px 0 0;
+    animation: jump 4s ease-in-out infinite;
   }
-  @keyframes dolphinJump {
-    0% { bottom: 0; left: 10%; transform: rotate(20deg) translateY(0); }
-    50% { bottom: 50%; left: 40%; transform: rotate(-20deg) translateY(-50px); }
-    100% { bottom: 0; left: 70%; transform: rotate(20deg) translateY(0); }
+  @keyframes jump {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50% { transform: translateY(-150px) rotate(20deg); }
   }
 </style>
 </head>
 <body>
+  <!-- Matrix Login -->
+  <div id="matrixScreen">
+    <h1>Ingrese la contraseña</h1>
+    <input type="password" id="password" placeholder="Contraseña...">
+    <div class="lluvia" id="lluvia"></div>
+  </div>
 
-<!-- ===== LOGIN MATRIX ===== -->
-<div id="matrixScreen">
-  <h1>Ingrese la contraseña</h1>
-  <input type="password" id="password" placeholder="Contraseña...">
-  <div class="lluvia" id="lluvia"></div>
-</div>
-
-<!-- ===== ESCENA ATARDECER ===== -->
-<div id="sunsetScene">
-  <div class="sun"></div>
-  <div class="wave"></div>
-  <div class="wave"></div>
-  <div class="cloud" style="width:100px;height:50px;top:20%;left:10%;"></div>
-  <div class="cloud" style="width:150px;height:80px;top:25%;left:60%;"></div>
-  <div class="text-box" id="romanticText"></div>
-  <div class="dolphin" id="dolphin1"></div>
-  <div class="dolphin" id="dolphin2" style="animation-delay: 2s;"></div>
-</div>
+  <!-- Escena atardecer -->
+  <div id="sunsetScene">
+    <div class="sun"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="cloud" style="width:80px;height:50px;top:15%;animation-delay:0s;"></div>
+    <div class="cloud" style="width:100px;height:60px;top:20%;animation-delay:20s;"></div>
+    <div id="message"></div>
+    <div id="love">TE AMO</div>
+  </div>
 
 <script>
-  /* ===== ANIMACIÓN MATRIX ===== */
+  // Matrix animation
   function crearLluvia() {
     const lluvia = document.getElementById('lluvia');
     for (let i = 0; i < 50; i++) {
@@ -177,20 +201,22 @@
   }
   crearLluvia();
 
+  // Login
   document.getElementById('password').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       const pass = this.value.trim().toLowerCase();
       if (pass === 'mes 2') {
         document.getElementById('matrixScreen').style.display = 'none';
-        iniciarAtardecer();
+        document.getElementById('sunsetScene').style.display = 'block';
+        mostrarMensaje();
       } else {
         alert('Contraseña incorrecta');
       }
     }
   });
 
-  /* ===== TEXTO ROMÁNTICO ===== */
-  const mensaje = `Hoy cumplimos 2 meses juntos…
+  // Texto romántico
+  const texto = `Hoy cumplimos 2 meses juntos…
 
 Y aunque el tiempo parezca corto,
 para mí ha sido suficiente para darme cuenta
@@ -214,30 +240,35 @@ Dos meses son solo el inicio…
 y yo quiero que esta historia
 dure para siempre`;
 
-  function iniciarAtardecer() {
-    document.getElementById('sunsetScene').style.display = 'block';
-    mostrarTextoLento(mensaje, () => {
-      document.getElementById('romanticText').innerHTML += "<br><br><b>Te amo ❤️</b>";
-      document.getElementById('dolphin1').style.display = 'block';
-      document.getElementById('dolphin2').style.display = 'block';
-    });
-  }
-
-  function mostrarTextoLento(texto, callback) {
-    const textBox = document.getElementById('romanticText');
+  function mostrarMensaje() {
+    const msgEl = document.getElementById('message');
     let i = 0;
     function escribir() {
       if (i < texto.length) {
-        textBox.innerHTML += texto[i] === "\n" ? "<br>" : texto[i];
+        msgEl.innerHTML += texto.charAt(i);
         i++;
         setTimeout(escribir, 50);
       } else {
-        if (callback) callback();
+        mostrarTeAmo();
       }
     }
     escribir();
   }
-</script>
 
+  // Mostrar TE AMO y delfines
+  function mostrarTeAmo() {
+    const love = document.getElementById('love');
+    love.style.display = 'block';
+    for (let i = 0; i < 3; i++) {
+      const d = document.createElement('div');
+      d.classList.add('dolphin');
+      d.style.left = `${20 + i*20}%`;
+      d.style.bottom = '20%';
+      d.style.animationDelay = `${i}s`;
+      document.getElementById('sunsetScene').appendChild(d);
+    }
+  }
+</script>
 </body>
 </html>
+
