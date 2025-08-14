@@ -2,248 +2,231 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<title>Acceso Mes 2</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mes 2</title>
 <style>
-    /* ======== ESTILO LOGIN MATRIX ======== */
-    body {
-        margin: 0;
-        overflow: hidden;
-        background: black;
-        color: #0F0;
-        font-family: monospace;
-    }
-    #matrixCanvas {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: black;
-    }
-    #loginBox {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        z-index: 2;
-    }
-    #loginBox input {
-        background: transparent;
-        border: 1px solid #0F0;
-        color: #0F0;
-        font-size: 20px;
-        padding: 5px;
-        outline: none;
-        text-align: center;
-    }
-    .blink {
-        animation: blink 1s infinite;
-    }
-    @keyframes blink {
-        0%, 50% { opacity: 1; }
-        51%, 100% { opacity: 0; }
-    }
+  /* ===== GENERAL ===== */
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body, html{
+    height:100%; width:100%; overflow:hidden; font-family: monospace; background:black; color:#00ff00;
+  }
+  /* ===== LOGIN MATRIX ===== */
+  #login{
+    height:100%; width:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    position:absolute; top:0; left:0; z-index:10;
+  }
+  #login h1{text-shadow:0 0 10px #00ff00; animation:parpadeo 1.5s infinite alternate;}
+  @keyframes parpadeo{0%{opacity:1;}100%{opacity:0.7;}}
+  #login input{
+    background:black; border:2px solid #00ff00; color:#00ff00; font-size:1.5em; padding:10px; outline:none; text-align:center;
+  }
+  .lluvia{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:-1;}
+  .char{position:absolute;color:#00ff00;font-family:monospace;animation:caer 2s linear infinite;}
+  @keyframes caer{0%{transform:translateY(-100%);}100%{transform:translateY(100vh);}}
 
-    /* ======== ESTILO ATARDECER ======== */
-    #sunsetScene {
-        display: none;
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        overflow: hidden;
-        background: linear-gradient(to top, #ff8000, #ffcc66);
-    }
-    .sun {
-        position: absolute;
-        bottom: 20%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 150px; height: 150px;
-        background: radial-gradient(circle, #FFD700, #FFA500);
-        border-radius: 50%;
-        box-shadow: 0 0 100px #FFD700;
-    }
-    .wave {
-        position: absolute;
-        bottom: 0;
-        width: 200%;
-        height: 200px;
-        background: rgba(0, 119, 190, 0.7);
-        border-radius: 100%;
-        animation: waveAnim 8s linear infinite;
-    }
-    .wave:nth-child(2) {
-        background: rgba(0, 150, 255, 0.5);
-        animation-duration: 10s;
-    }
-    @keyframes waveAnim {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-    }
-    .cloud {
-        position: absolute;
-        background: rgba(255,255,255,0.8);
-        border-radius: 50%;
-        animation: moveClouds 60s linear infinite;
-    }
-    @keyframes moveClouds {
-        0% { left: -200px; }
-        100% { left: 100%; }
-    }
-    #textBox {
-        position: absolute;
-        top: 10%;
-        width: 100%;
-        text-align: center;
-        font-size: 24px;
-        color: white;
-        text-shadow: 2px 2px 4px black;
-        background: rgba(0,0,0,0.3);
-        padding: 20px;
-        opacity: 0;
-        transition: opacity 1s;
-    }
-    #teAmo {
-        display: none;
-        position: absolute;
-        bottom: 40%;
-        width: 100%;
-        text-align: center;
-        font-size: 48px;
-        color: pink;
-        text-shadow: 2px 2px 8px red;
-        animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-    }
-    .dolphin {
-        display: none;
-        position: absolute;
-        width: 80px;
-        height: 40px;
-        background: gray;
-        border-radius: 40px 40px 0 0;
-        animation: jump 3s ease-in-out infinite;
-    }
-    @keyframes jump {
-        0% { bottom: 0; left: 10%; transform: rotate(0deg); }
-        50% { bottom: 200px; left: 30%; transform: rotate(20deg); }
-        100% { bottom: 0; left: 50%; transform: rotate(0deg); }
-    }
+  /* ===== ESCENA ATARDECER ===== */
+  #scene{position:fixed; inset:0; z-index:0; display:none;}
+  .ui { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:2; pointer-events:none; }
+  .panel{
+    max-width:min(900px,92vw);
+    padding:20px 24px;
+    border-radius:20px;
+    background: rgba(0,0,0,0.28);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+  }
+  #mensaje{
+    font-size: clamp(18px, 2.2vw, 28px);
+    line-height:1.5; text-align:center; white-space:pre-wrap;
+    color:white;
+  }
+
+  .line{opacity:0; transform:translateY(6px); animation:fadeInUp .6s ease forwards;}
+  @keyframes fadeInUp {to{opacity:1; transform:translateY(0);}}
+
+  /* TE AMO */
+  #teamo{
+    position: fixed; top:6vh; left:0; right:0; margin:auto; text-align:center;
+    font-weight:800; font-size:clamp(40px,6vw,90px); letter-spacing:.04em;
+    opacity:0; filter:drop-shadow(0 0 10px #ff99b3);
+    text-shadow:0 0 20px #ff99b3,0 0 40px #ff3b6b; z-index:3;
+  }
+  .show-teamo{animation:teamoIn 1.6s ease forwards, pulse 2.2s ease-in-out 1.6s 3;}
+  @keyframes teamoIn{from{opacity:0; transform:translateY(-12px);}to{opacity:1; transform:translateY(0);}}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+
+  /* Delfines */
+  .dolphins{position:fixed; inset:0; pointer-events:none; z-index:3; opacity:0;}
+  .dolphins.show{opacity:1; transition: opacity .6s ease;}
+  .d-track{position:absolute; bottom:35vh; width:100px; height:60px;}
+  .d1{left:22vw;} .d2{left:60vw; animation-delay:.8s;}
+  .dolphin-shape{width:100%; height:100%; transform-origin:50% 100%; animation:jump 2.8s ease-in-out 0s 2;}
+  .d2 .dolphin-shape{animation-delay:.8s;}
+  @keyframes jump{
+    0%{transform:translateX(0) translateY(0) rotate(0deg);opacity:.95;}
+    25%{transform:translateX(60px) translateY(-90px) rotate(18deg);opacity:1;}
+    50%{transform:translateX(120px) translateY(0) rotate(0deg);opacity:.95;}
+    70%{transform:translateX(160px) translateY(-65px) rotate(14deg);opacity:1;}
+    100%{transform:translateX(220px) translateY(0) rotate(0deg);opacity:.95;}
+  }
+  .splash{position:absolute; bottom:0; left:0; width:14px; height:14px; border-radius:50%; background: rgba(255,255,255,.65);
+    transform: translate(110px,-4px) scale(0); animation:splash .9s ease .7s 2; filter:blur(1px);}
+  .d2 .splash{animation-delay:1.5s;}
+  @keyframes splash{0%{transform:translate(110px,-4px) scale(0);opacity:.8;}
+    50%{transform:translate(110px,-8px) scale(1);opacity:.9;}100%{transform:translate(110px,0) scale(0);opacity:0;}}
 </style>
 </head>
 <body>
 
-<!-- Pantalla Matrix -->
-<canvas id="matrixCanvas"></canvas>
-<div id="loginBox">
-    <h1 class="blink">Ingrese la contraseña:</h1>
-    <input type="password" id="password" placeholder="Contraseña">
+<!-- ===== LOGIN MATRIX ===== -->
+<div id="login">
+  <h1>Ingrese la contraseña</h1>
+  <input type="password" id="password" placeholder="DD/MM/AA">
+  <div class="lluvia" id="lluvia"></div>
 </div>
 
-<!-- Escena del atardecer -->
-<div id="sunsetScene">
-    <div class="sun"></div>
-    <div class="cloud" style="top:20px;width:120px;height:60px;"></div>
-    <div class="cloud" style="top:50px;width:180px;height:90px;"></div>
-    <div class="wave"></div>
-    <div class="wave"></div>
-    <div id="textBox"></div>
-    <div id="teAmo">TE AMO</div>
-    <div class="dolphin"></div>
+<!-- ===== ESCENA ATARDECER ===== -->
+<canvas id="scene"></canvas>
+<div class="ui">
+  <div class="panel">
+    <div id="mensaje"></div>
+  </div>
+</div>
+<div id="teamo">TE AMO</div>
+<div class="dolphins" id="dolphins">
+  <div class="d-track d1">
+    <div class="dolphin-shape">
+      <svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+        <path d="M10,70 C30,40 80,30 120,50 C150,65 170,55 185,52 C170,70 145,80 120,78 C85,75 60,85 30,85 C20,85 12,80 10,70 Z" fill="#cfd8dc"/>
+        <path d="M25,68 C50,45 95,38 130,50 C150,56 165,55 178,52 C165,60 150,66 130,64 C96,61 70,70 40,76 Z" fill="#b0bec5"/>
+        <path d="M90,52 C96,42 110,34 112,48 C104,50 97,52 90,52 Z" fill="#90a4ae"/>
+        <path d="M180,52 C188,50 196,56 196,63 C190,62 185,60 180,58 Z" fill="#b0bec5"/>
+        <path d="M75,72 C80,76 85,82 75,84 C70,82 70,76 75,72 Z" fill="#90a4ae"/>
+        <circle cx="60" cy="58" r="2.3" fill="#263238"/>
+      </svg>
+    </div>
+    <div class="splash"></div>
+  </div>
+  <div class="d-track d2">
+    <div class="dolphin-shape">
+      <svg viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+        <path d="M10,70 C30,40 80,30 120,50 C150,65 170,55 185,52 C170,70 145,80 120,78 C85,75 60,85 30,85 C20,85 12,80 10,70 Z" fill="#cfd8dc"/>
+        <path d="M25,68 C50,45 95,38 130,50 C150,56 165,55 178,52 C165,60 150,66 130,64 C96,61 70,70 40,76 Z" fill="#b0bec5"/>
+        <path d="M90,52 C96,42 110,34 112,48 C104,50 97,52 90,52 Z" fill="#90a4ae"/>
+        <path d="M180,52 C188,50 196,56 196,63 C190,62 185,60 180,58 Z" fill="#b0bec5"/>
+        <path d="M75,72 C80,76 85,82 75,84 C70,82 70,76 75,72 Z" fill="#90a4ae"/>
+        <circle cx="60" cy="58" r="2.3" fill="#263238"/>
+      </svg>
+    </div>
+    <div class="splash"></div>
+  </div>
 </div>
 
 <script>
-/* ======== MATRIX LOGIN ======== */
-const canvas = document.getElementById("matrixCanvas");
-const ctx = canvas.getContext("2d");
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
-const letters = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤユヨラリルレロワンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const matrix = letters.split("");
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = [];
-for (let x = 0; x < columns; x++) drops[x] = 1;
-function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#0F0";
-    ctx.font = fontSize + "px monospace";
-    for (let i = 0; i < drops.length; i++) {
-        const text = matrix[Math.floor(Math.random() * matrix.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-    }
+/* ===== MATRIX ===== */
+function crearLluvia(){
+  const lluvia = document.getElementById('lluvia');
+  for(let i=0;i<50;i++){
+    const char=document.createElement('div');
+    char.classList.add('char');
+    char.style.left=`${Math.random()*100}vw`;
+    char.style.fontSize=`${Math.random()*20+10}px`;
+    char.style.animationDuration=`${Math.random()*3+2}s`;
+    char.textContent=String.fromCharCode(0x30A0 + Math.random()*96);
+    lluvia.appendChild(char);
+  }
 }
-setInterval(drawMatrix, 35);
+crearLluvia();
 
-/* ======== LOGIN EVENT ======== */
-document.getElementById("password").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
-        if (this.value === "03/08/25") {
-            document.getElementById("matrixCanvas").style.display = "none";
-            document.getElementById("loginBox").style.display = "none";
-            startSunset();
-        } else {
-            alert("Contraseña incorrecta");
-        }
+/* ===== LOGIN ===== */
+const passwordInput=document.getElementById('password');
+passwordInput.addEventListener('keydown', function(e){
+  if(e.key==='Enter'){
+    const pass=this.value.trim().toLowerCase();
+    if(pass==='03/08/25'){
+      document.getElementById('login').style.display='none';
+      iniciarAtardecer();
+    }else{
+      alert('Contraseña incorrecta');
     }
+  }
 });
 
-/* ======== ATARDECER ======== */
-function startSunset() {
-    const scene = document.getElementById("sunsetScene");
-    scene.style.display = "block";
-
-    const textBox = document.getElementById("textBox");
-    const texto = [
-        "Hoy cumplimos 2 meses juntos…",
-        "",
-        "Y aunque el tiempo parezca corto,",
-        "para mí ha sido suficiente para darme cuenta",
-        "de lo afortunado que soy de tenerte en mi vida.",
-        "",
-        "En cada sonrisa tuya, encuentro paz.",
-        "En cada palabra tuya, encuentro alegría.",
-        "En cada momento contigo,",
-        "siento que el mundo es un lugar más bonito.",
-        "",
-        "Gracias por estos días",
-        "llenos de risas,",
-        "abrazos",
-        "y recuerdos que guardaré para siempre.",
-        "",
-        "Te prometo seguir cuidándote,",
-        "respetándote",
-        "y queriéndote cada día más.",
-        "",
-        "Dos meses son solo el inicio…",
-        "y yo quiero que esta historia",
-        "dure para siempre"
-    ];
-    let i = 0;
-    function mostrarLinea() {
-        if (i < texto.length) {
-            textBox.style.opacity = 1;
-            textBox.innerHTML += texto[i] + "<br>";
-            i++;
-            setTimeout(mostrarLinea, 1500);
-        } else {
-            mostrarFinal();
-        }
+/* ===== ATARDECER ===== */
+const canvas=document.getElementById('scene');
+const c=canvas.getContext('2d');
+function resize(){canvas.width=innerWidth; canvas.height=innerHeight;}
+resize(); addEventListener('resize',resize);
+let start=performance.now();
+function draw(t){
+  const w=canvas.width,h=canvas.height;
+  const dt=(t-start)/1000;
+  // CIELO
+  const sky=c.createLinearGradient(0,0,0,h);
+  sky.addColorStop(0,'#FFE8A3'); sky.addColorStop(0.35,'#FF9C6B');
+  sky.addColorStop(0.65,'#F45B69'); sky.addColorStop(1,'#1b1b3a');
+  c.fillStyle=sky; c.fillRect(0,0,w,h);
+  // SOL
+  const sunBaseY=h*0.38; const sunY=sunBaseY+Math.min(dt*12,h*0.18); const sunX=w/2; const R=Math.max(60,Math.min(90,w*0.06));
+  const halo=c.createRadialGradient(sunX,sunY,0,sunX,sunY,R*2.4);
+  halo.addColorStop(0,'rgba(255,244,204,0.95)'); halo.addColorStop(0.45,'rgba(255,200,120,0.55)'); halo.addColorStop(1,'rgba(255,120,60,0)');
+  c.fillStyle=halo; c.beginPath(); c.arc(sunX,sunY,R*2.2,0,Math.PI*2); c.fill();
+  c.fillStyle='#FFE9B3'; c.beginPath(); c.arc(sunX,sunY,R,0,Math.PI*2); c.fill();
+  // MAR
+  const horizon=h*0.66;
+  const sea=c.createLinearGradient(0,horizon,0,h);
+  sea.addColorStop(0,'#F06863'); sea.addColorStop(0.4,'#1d4166'); sea.addColorStop(1,'#0a1b36');
+  c.fillStyle=sea; c.fillRect(0,horizon,w,h-horizon);
+  // OLAS
+  c.lineWidth=1.4;
+  for(let i=0;i<6;i++){
+    const amp=6+i*2, k=0.012+i*0.004, speed=0.8+i*0.18;
+    c.strokeStyle=`rgba(255,255,255,${0.16-i*0.02})`;
+    c.beginPath();
+    for(let x=0;x<=w;x+=8){
+      const y=horizon+(i*12)+Math.sin(x*k+t*0.0016*speed)*amp;
+      if(x===0)c.moveTo(x,y);else c.lineTo(x,y);
     }
-    mostrarLinea();
+    c.stroke();
+  }
+  requestAnimationFrame(draw);
 }
 
-function mostrarFinal() {
-    const teAmo = document.getElementById("teAmo");
-    const dolphin = document.querySelector(".dolphin");
-    teAmo.style.display = "block";
-    dolphin.style.display = "block";
+/* ===== TEXTO ===== */
+const texto=[
+"Hoy cumplimos 2 meses juntos…","",
+"Y aunque el tiempo parezca corto,","para mí ha sido suficiente para darme cuenta","de lo afortunado que soy de tenerte en mi vida.","",
+"En cada sonrisa tuya, encuentro paz.","En cada palabra tuya, encuentro alegría.","En cada momento contigo,","siento que el mundo es un lugar más bonito.","",
+"Gracias por estos días","llenos de risas,","abrazos","y recuerdos que guardaré para siempre.","",
+"Te prometo seguir cuidándote,","respetándote","y queriéndote cada día más.","",
+"Dos meses son solo el inicio…","y yo quiero que esta historia","dure para siempre"
+];
+const cont=document.getElementById('mensaje');
+const teamo=document.getElementById('teamo');
+const dolphins=document.getElementById('dolphins');
+
+function mostrarLineas(lines,cb){
+  let i=0;
+  function paso(){
+    if(i>=lines.length){cb && cb(); return;}
+    const p=document.createElement('div'); p.className='line'; p.textContent=lines[i];
+    cont.innerHTML=''; // borra la línea anterior
+    cont.appendChild(p); i++;
+    const delay=(lines[i-1].trim()==="")?800:2500; 
+    setTimeout(paso,delay);
+  }
+  paso();
+}
+
+function iniciarAtardecer(){
+  canvas.style.display='block';
+  requestAnimationFrame(draw);
+  document.querySelector('.ui').style.display='flex';
+  mostrarLineas(texto,()=>{
+    teamo.classList.add('show-teamo');
+    dolphins.classList.add('show');
+    setTimeout(()=>{dolphins.style.opacity=0;},6500);
+  });
 }
 </script>
 </body>
