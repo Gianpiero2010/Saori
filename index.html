@@ -1,133 +1,348 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Para Mi Amor ❤️</title>
-<style>
-  body {
-    margin: 0;
-    background: black;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-  }
-  #login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: white;
-  }
-  #garden {
-    display: none;
-    width: 100%;
-    height: 100vh;
-    position: relative;
-  }
-  input {
-    padding: 10px;
-    font-size: 1.2em;
-    text-align: center;
-    border: none;
-    border-radius: 8px;
-  }
-  @keyframes ola {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-10px); }
-  }
-  @keyframes salto {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-50px) rotate(-20deg); }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Saori</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body, html {
+      height: 100%;
+      background-color: black;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+    #login {
+      height: 100%;
+      width: 100%;
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      position: absolute;
+      z-index: 10;
+    }
+    #login input {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+    }
+    #garden {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top, #1a1a40, #0b0c10);
+      z-index: 5;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .grass {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(to top, #2e8b57, transparent);
+      z-index: 1;
+    }
+    #moon {
+      position: absolute;
+      top: 10%;
+      right: 5%;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 30% 30%, #fff, #ccc);
+      border-radius: 50%;
+      box-shadow: 0 0 40px #ccc;
+      z-index: 2;
+    }
+    #message {
+      position: absolute;
+      bottom: 15%;
+      width: 100%;
+      text-align: center;
+      font-size: 2.5em;
+      color: white;
+      opacity: 0;
+      z-index: 3;
+      transition: opacity 1s;
+      animation: fadeInMessage 1s ease-in-out;
+    }
+    @keyframes fadeInMessage {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    #constellation {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 4;
+    }
+    #easter {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: white;
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    #easter img, #easter video {
+      max-width: 90%;
+      max-height: 70%;
+      border: 4px solid white;
+      border-radius: 12px;
+    }
+    #easter p {
+      font-size: 3em;
+      text-align: center;
+    }
+    #fireworks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 19;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
+  <div id="login">
+    <label for="password">Ingresa la contraseña:</label>
+    <input type="password" id="password" placeholder="DD/MM/AA" />
+  </div>
+  <canvas id="fireworks"></canvas>
+  <div id="garden">
+    <div id="moon"></div>
+    <div class="grass"></div>
+    <div id="message"></div>
+    <canvas id="constellation"></canvas>
+  </div>
+  <div id="easter"></div>
 
-<div id="login">
-  <h1>Ingresa la contraseña 💌</h1>
-  <input type="text" id="password" placeholder="Escríbela aquí...">
-</div>
+  <script>
+    const passwordInput = document.getElementById('password');
+    const garden = document.getElementById('garden');
+    const message = document.getElementById('message');
+    const easter = document.getElementById('easter');
+    const constellationCanvas = document.getElementById('constellation');
+    const fireworksCanvas = document.getElementById('fireworks');
 
-<div id="garden"></div>
-
-<script>
-  const garden = document.getElementById('garden');
-  const passwordInput = document.getElementById('password');
-
-  passwordInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      const value = passwordInput.value.trim();
-      document.getElementById('login').style.display = 'none';
-      if (value === '03/08/25') {
-        mostrarAtardecer();
-      } else {
-        garden.style.display = 'flex';
-        garden.innerHTML = `<p style="color:white;font-size:2em;margin:auto;">Contraseña incorrecta 😅</p>`;
-      }
-    }
-  });
-
-  function mostrarAtardecer() {
-    garden.style.display = 'block';
-    garden.innerHTML = `
-      <div id="atardecer" style="
-        width:100%;height:100%;
-        background: linear-gradient(to top, #0d1b2a 10%, #1b263b 30%, #f77f00 70%, #fcbf49 90%);
-        position:relative;overflow:hidden;">
-        <div id="mar" style="
-          position:absolute;bottom:0;width:100%;height:40%;
-          background:linear-gradient(to top, #003049, #1b4965);
-          animation: ola 4s infinite alternate ease-in-out;">
-        </div>
-        <div id="mensaje2meses" style="
-          position:absolute;top:10%;width:100%;
-          text-align:center;color:white;font-size:2.5em;
-          text-shadow:2px 2px 5px black;">
-        </div>
-        <div id="delfines" style="display:none;position:absolute;bottom:20%;width:100%;text-align:center;font-size:3em;">
-          <span class="delfin" style="display:inline-block;">🐬</span>
-          <span class="delfin" style="display:inline-block;">🐬</span>
-          <span class="delfin" style="display:inline-block;">🐬</span>
-        </div>
-        <div id="teamo" style="display:none;position:absolute;top:5%;width:100%;text-align:center;color:white;font-size:4em;font-weight:bold;text-shadow:2px 2px 8px black;">TE AMO</div>
-      </div>
-    `;
-
-    const mensajes2 = [
-      "Hoy cumplimos 2 meses juntos, y aunque el tiempo parece corto, para mí ha sido suficiente para darme cuenta de lo afortunado que soy de tenerte en mi vida.",
-      "En cada sonrisa tuya encuentro paz, en cada palabra tuya encuentro alegría, y en cada momento contigo siento que el mundo es un lugar más bonito.",
-      "Gracias por estos días llenos de risas, abrazos y recuerdos que guardaré para siempre.",
-      "Te prometo seguir cuidándote, respetándote y queriéndote cada día más.",
-      "Dos meses son solo el inicio… y yo quiero que esta historia dure para siempre."
+    const mensajes = [
+      "Gracias por aparecer en mi vida y mejorarla saori",
+      "ya que cumplimos 1 mes quiero decirte",
+      "que me haces el hombre más feliz cuando estoy a tu lado",
+      "te amo y siempre lo hare",
+      "no olvides que para cualquier cosa que necesites ayuda",
+      "estare ahi",
+      "para ayudarte",
+      "Gracias por ser mi novia",
+      "te adoro",
+      "te amo",
+      "eres la persona más hermosa que eh conocido",
+      "y aunque digas que no eres guapa",
+      "lo eres y nunca lo dejaras de ser",
+      "gracias por estar a mi lado todo este tiempo"
     ];
 
-    let i = 0;
-    function mostrar() {
-      if (i < mensajes2.length) {
-        document.getElementById('mensaje2meses').style.opacity = 0;
-        setTimeout(() => {
-          document.getElementById('mensaje2meses').textContent = mensajes2[i];
-          document.getElementById('mensaje2meses').style.opacity = 1;
-          i++;
-          setTimeout(mostrar, 4000);
-        }, 500);
-      } else {
-        document.getElementById('delfines').style.display = 'block';
-        document.getElementById('teamo').style.display = 'block';
-        animarDelfines();
+    passwordInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const value = passwordInput.value.trim().toLowerCase();
+        document.getElementById('login').style.display = 'none';
+        if (value === '03/06/25') {
+          garden.style.display = 'block';
+          crearEstrellas(100);
+          mostrarMensajes();
+        } else if (value === '1 mes') {
+          lanzarFuegosArtificiales(true);
+          easter.style.display = 'flex';
+          easter.innerHTML = '<p>¡Feliz 1 mes! 🎉🎆</p>';
+        } else {
+          mostrarEasterEgg(value);
+        }
+      }
+    });
+
+    function crearEstrellas(num) {
+      for (let i = 0; i < num; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.top = Math.random() * window.innerHeight + 'px';
+        star.style.left = Math.random() * window.innerWidth + 'px';
+        star.style.animationDuration = (1 + Math.random() * 2) + 's';
+        garden.appendChild(star);
       }
     }
-    mostrar();
-  }
 
-  function animarDelfines() {
-    document.querySelectorAll('.delfin').forEach((d, idx) => {
-      d.style.animation = `salto 1.5s ${idx * 0.5}s infinite ease-in-out`;
-    });
-  }
-</script>
+    function mostrarMensajes() {
+      let i = 0;
+      function mostrar() {
+        if (i < mensajes.length) {
+          message.style.opacity = 0;
+          setTimeout(() => {
+            message.textContent = mensajes[i];
+            message.style.opacity = 1;
+            i++;
+            setTimeout(mostrar, 3000);
+          }, 500);
+        } else {
+          setTimeout(dibujarConstelacion, 1000);
+        }
+      }
+      mostrar();
+    }
 
+    function dibujarConstelacion() {
+      constellationCanvas.style.display = 'block';
+      const ctx = constellationCanvas.getContext('2d');
+      constellationCanvas.width = window.innerWidth;
+      constellationCanvas.height = window.innerHeight;
+      const puntos = [
+        { x: 100, y: 150 }, { x: 120, y: 130 }, { x: 140, y: 150 },
+        { x: 180, y: 130 }, { x: 180, y: 170 },
+        { x: 220, y: 130 }, { x: 220, y: 150 }, { x: 220, y: 170 },
+        { x: 260, y: 150 }, { x: 260, y: 130 }, { x: 280, y: 130 },
+        { x: 300, y: 130 }, { x: 300, y: 150 }, { x: 300, y: 170 }
+      ];
+      ctx.fillStyle = "white";
+      ctx.strokeStyle = "#88f";
+      ctx.lineWidth = 0.5;
+      puntos.forEach((p, i) => {
+        setTimeout(() => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 3, 0, 2 * Math.PI);
+          ctx.fill();
+          if (i > 0) {
+            ctx.beginPath();
+            ctx.moveTo(puntos[i - 1].x, puntos[i - 1].y);
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
+          }
+        }, i * 200);
+      });
+    }
+
+    function mostrarEasterEgg(value) {
+      easter.style.display = 'flex';
+      if (value === 'corazon' || value === 'chale wey') {
+        lanzarFuegosArtificiales();
+      }
+      switch(value) {
+        case 'corazon':
+          easter.innerHTML = '<svg width="200" height="200" viewBox="0 0 512 512"><path fill="red" d="M256 472s-212-132.3-212-284C44 94.1 94.1 44 152 44c38.6 0 75.1 19.4 97.4 50.5C271.9 63.4 308.5 44 347 44c57.9 0 108 50.1 108 144 0 151.7-212 284-212 284z"/></svg>';
+          break;
+        case 'witzi witzi araña':
+          easter.innerHTML = '<img src="Captura de pantalla 2025-07-01 164227.png" alt="Witzi"><audio autoplay loop><source src="Hola para la solicitud de trabajo  Si Witsi Witsi Araña.mp3" type="audio/mpeg"></audio>';
+          break;
+        case 'mierdita gorda':
+          easter.innerHTML = '<video autoplay controls><source src="ssstik.io_1751581414162.mp4" type="video/mp4"></video>';
+          break;
+        case 'piero':
+          easter.innerHTML = '<p>Yo que</p>';
+          break;
+        case 'gianpiero':
+          easter.innerHTML = '<p>pq me buscas wey</p>';
+          break;
+        case 'bebe':
+          easter.innerHTML = '<img src="Bebe.png" alt="bebe">';
+          break;
+        case 'kirby':
+          easter.innerHTML = '<img src="Kirby.jpeg" alt="kirby">';
+          break;
+        case 'chale wey':
+          easter.innerHTML = '<p>chale wey</p>';
+          break;
+        case 'inteligente':
+          easter.innerHTML = '<p>eres la más inteligente</p><img src="Nerd.webp" alt="nerd">';
+          break;
+        case 'fotocara':
+          easter.innerHTML = '<img src="fotocara.jpeg" alt="fotocara">';
+          break;
+        case 'maichan':
+          easter.innerHTML = '<p>BUSCAS ESTO PA PAJEARTE NOMAS</p>';
+          break;
+        case 'saori':
+          easter.innerHTML = '<p>la más hermosa guapa perfecta preciosa y todo te amooooooo</p>';
+          break;
+        default:
+          easter.innerHTML = '<p>Contraseña incorrecta</p>';
+      }
+    }
+
+    function lanzarFuegosArtificiales(muchos = false) {
+      const ctx = fireworksCanvas.getContext('2d');
+      fireworksCanvas.width = window.innerWidth;
+      fireworksCanvas.height = window.innerHeight;
+      const colors = ['#ff3366', '#ffff66', '#66ccff', '#cc99ff'];
+      const particles = [];
+
+      function crearParticula(x, y) {
+        const cantidad = muchos ? 150 : 50;
+        for (let i = 0; i < cantidad; i++) {
+          const angle = Math.random() * 2 * Math.PI;
+          const speed = Math.random() * 5 + 2;
+          particles.push({
+            x,
+            y,
+            dx: Math.cos(angle) * speed,
+            dy: Math.sin(angle) * speed,
+            life: 100,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function animar() {
+        ctx.fillStyle = 'rgba(0,0,0,0.1)';
+        ctx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, 2 * Math.PI);
+          ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          p.dy += 0.1;
+          p.life--;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+        requestAnimationFrame(animar);
+      }
+
+      setInterval(() => {
+        crearParticula(Math.random() * fireworksCanvas.width, Math.random() * fireworksCanvas.height / 2);
+      }, muchos ? 300 : 800);
+
+      animar();
+    }
+  </script>
 </body>
 </html>
-
-
