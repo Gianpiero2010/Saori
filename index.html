@@ -184,6 +184,9 @@
           lanzarFuegosArtificiales(true);
           easter.style.display = 'flex';
           easter.innerHTML = '<p>¡Feliz 1 mes! 🎉🎆</p>';
+        } else if (value === 'mes 2') {
+          // NUEVO: redirige a login_mes2.html
+          window.location.href = 'login_mes2.html';
         } else {
           mostrarEasterEgg(value);
         }
@@ -196,7 +199,7 @@
         star.classList.add('star');
         star.style.top = Math.random() * window.innerHeight + 'px';
         star.style.left = Math.random() * window.innerWidth + 'px';
-        star.style.animationDuration = (1 + Math.random() * 2) + 's';
+        star.style.animationDuration = (1 + Math.random() * 4) + 's';
         garden.appendChild(star);
       }
     }
@@ -210,8 +213,8 @@
             message.textContent = mensajes[i];
             message.style.opacity = 1;
             i++;
-            setTimeout(mostrar, 3000);
-          }, 500);
+            setTimeout(mostrar, 4000);
+          }, 1000);
         } else {
           setTimeout(dibujarConstelacion, 1000);
         }
