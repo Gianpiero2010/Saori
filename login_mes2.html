@@ -2,150 +2,192 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Mes 2</title>
+<title>Acceso Mes 2</title>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: black;
-        color: #00ff00;
-        font-family: monospace;
-        overflow: hidden;
-    }
-    canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: -1;
-    }
-    .login {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-    }
-    input {
-        background: black;
-        border: 2px solid #00ff00;
-        color: #00ff00;
-        padding: 10px;
-        font-size: 18px;
-        outline: none;
-    }
-    button {
-        background: black;
-        border: 2px solid #00ff00;
-        color: #00ff00;
-        padding: 10px 20px;
-        font-size: 18px;
-        cursor: pointer;
-    }
-    /* Estilo para la escena romántica */
-    .scene {
-        display: none;
-        text-align: center;
-        color: white;
-        font-family: Arial, sans-serif;
-    }
-    .message {
-        max-width: 700px;
-        margin: auto;
-        background: rgba(0,0,0,0.6);
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 18px;
-    }
-    .te-amo {
-        font-size: 50px;
-        font-weight: bold;
-        color: pink;
-        margin-top: 20px;
-        text-shadow: 2px 2px 5px red;
-    }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    font-family: monospace;
+    color: #00ff00;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+  }
+  h1 {
+    text-shadow: 0 0 10px #00ff00;
+    animation: parpadeo 1.5s infinite alternate;
+  }
+  @keyframes parpadeo {
+    0% { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+  input {
+    background-color: black;
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-size: 1.5em;
+    padding: 10px;
+    outline: none;
+    text-align: center;
+  }
+  .lluvia {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .char {
+    position: absolute;
+    color: #00ff00;
+    animation: caer 2s linear infinite;
+  }
+  @keyframes caer {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+
+  /* Estilo atardecer */
+  .atardecer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(to top, #ff6600, #ffcc66);
+    overflow: hidden;
+    display: none;
+  }
+  .sol {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, #ffdd66, #ff6600);
+    border-radius: 50%;
+    animation: moverSol 10s linear forwards;
+  }
+  @keyframes moverSol {
+    from { bottom: 30%; }
+    to { bottom: 10%; }
+  }
+  .mar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to top, #004466, #006699);
+  }
+  .delfin {
+    position: absolute;
+    bottom: 35%;
+    width: 80px;
+    animation: saltar 4s ease-in-out infinite;
+  }
+  @keyframes saltar {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(150px) translateY(-100px) rotate(20deg); }
+  }
+  .mensaje {
+    position: absolute;
+    top: 10%;
+    width: 80%;
+    text-align: center;
+    font-size: 1.5em;
+    color: white;
+    display: none;
+  }
+  .teamo {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    font-size: 4em;
+    color: red;
+    opacity: 0;
+    transition: opacity 2s ease;
+    font-weight: bold;
+  }
 </style>
 </head>
 <body>
 
-<canvas id="matrix"></canvas>
-
-<div class="login" id="loginBox">
-    <h1>Ingrese la contraseña</h1>
-    <input type="password" id="password" placeholder="Contraseña">
-    <button onclick="checkPassword()">Entrar</button>
+<!-- Pantalla estilo Matrix -->
+<div id="pantallaMatrix">
+  <h1>Ingrese la contraseña</h1>
+  <input type="password" id="password" placeholder="Contraseña...">
+  <div class="lluvia" id="lluvia"></div>
 </div>
 
-<div class="scene" id="scene">
-    <div class="te-amo">TE AMO</div>
-    <img src="https://images.pexels.com/photos/1320684/pexels-photo-1320684.jpeg" alt="Atardecer" width="100%">
-    <div class="message">
-        Hoy cumplimos 2 meses juntos, y aunque el tiempo parece corto, para mí ha sido suficiente para darme cuenta de lo afortunado que soy de tenerte en mi vida.<br><br>
-        En cada sonrisa tuya encuentro paz, en cada palabra tuya encuentro alegría, y en cada momento contigo siento que el mundo es un lugar más bonito.<br><br>
-        Gracias por estos días llenos de risas, abrazos y recuerdos que guardaré para siempre.<br><br>
-        Te prometo seguir cuidándote, respetándote y queriéndote cada día más.<br><br>
-        Dos meses son solo el inicio… y yo quiero que esta historia dure para siempre.
-    </div>
-    <canvas id="dolphins" width="800" height="300"></canvas>
+<!-- Escena de atardecer -->
+<div class="atardecer" id="atardecer">
+  <div class="sol"></div>
+  <div class="mar"></div>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Dolphin_icon.svg" class="delfin" style="left:20%;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Dolphin_icon.svg" class="delfin" style="left:60%; animation-delay:2s;">
+  <div class="mensaje" id="mensaje"></div>
+  <div class="teamo" id="teamo">TE AMO</div>
 </div>
 
 <script>
-// Animación estilo Matrix
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
-const letters = 'アァイィウヴエェオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const matrix = letters.split('');
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(1);
-
-function drawMatrix() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#0F0';
-    ctx.font = fontSize + 'px monospace';
-    for (let i = 0; i < drops.length; i++) {
-        const text = matrix[Math.floor(Math.random() * matrix.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
+  // Animación tipo Matrix
+  function crearLluvia() {
+    const lluvia = document.getElementById('lluvia');
+    for (let i = 0; i < 50; i++) {
+      const char = document.createElement('div');
+      char.classList.add('char');
+      char.style.left = `${Math.random() * 100}vw`;
+      char.style.fontSize = `${Math.random() * 20 + 10}px`;
+      char.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      char.textContent = String.fromCharCode(0x30A0 + Math.random() * 96);
+      lluvia.appendChild(char);
     }
-}
-setInterval(drawMatrix, 35);
+  }
+  crearLluvia();
 
-// Verificación de contraseña
-function checkPassword() {
-    const pass = document.getElementById('password').value;
-    if (pass === '03/08/25') {
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('scene').style.display = 'block';
-        startDolphins();
-    } else {
+  // Texto romántico
+  const textoRomantico = `Hoy cumplimos 2 meses juntos, y aunque el tiempo parece corto, para mí ha sido suficiente para darme cuenta de lo afortunado que soy de tenerte en mi vida.
+En cada sonrisa tuya encuentro paz, en cada palabra tuya encuentro alegría, y en cada momento contigo siento que el mundo es un lugar más bonito.
+Gracias por estos días llenos de risas, abrazos y recuerdos que guardaré para siempre.
+Te prometo seguir cuidándote, respetándote y queriéndote cada día más.
+Dos meses son solo el inicio… y yo quiero que esta historia dure para siempre.`;
+
+  function mostrarTexto() {
+    const mensaje = document.getElementById("mensaje");
+    mensaje.style.display = "block";
+    let i = 0;
+    function escribir() {
+      if (i < textoRomantico.length) {
+        mensaje.textContent += textoRomantico.charAt(i);
+        i++;
+        setTimeout(escribir, 50);
+      } else {
+        setTimeout(() => {
+          document.getElementById("teamo").style.opacity = 1;
+        }, 1000);
+      }
+    }
+    escribir();
+  }
+
+  // Verificar contraseña
+  document.getElementById('password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const pass = this.value.trim();
+      if (pass === '03/08/25') {
+        document.getElementById("pantallaMatrix").style.display = "none";
+        document.getElementById("atardecer").style.display = "block";
+        setTimeout(mostrarTexto, 2000);
+      } else {
         alert('Contraseña incorrecta');
+      }
     }
-}
-
-// Animación simple de delfines
-function startDolphins() {
-    const canvasD = document.getElementById('dolphins');
-    const ctxD = canvasD.getContext('2d');
-    let t = 0;
-    function draw() {
-        ctxD.clearRect(0, 0, canvasD.width, canvasD.height);
-        ctxD.fillStyle = '#1E90FF';
-        ctxD.fillRect(0, 200, canvasD.width, 100);
-        ctxD.fillStyle = 'gray';
-        const x = (t * 5) % canvasD.width;
-        const y = 200 - Math.sin(t / 10) * 50;
-        ctxD.beginPath();
-        ctxD.ellipse(x, y, 40, 20, 0, 0, Math.PI * 2);
-        ctxD.fill();
-        t++;
-        requestAnimationFrame(draw);
-    }
-    draw();
-}
+  });
 </script>
 
 </body>
