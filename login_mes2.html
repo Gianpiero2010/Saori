@@ -192,7 +192,8 @@ function draw(t){
   requestAnimationFrame(draw);
 }
 
-/* ===== TEXTO ===== */
+<!-- ===== TEXTO ===== -->
+<script>
 const texto=[
 "Hoy cumplimos 2 meses juntos…","",
 "Y aunque el tiempo parezca corto,","para mí ha sido suficiente para darme cuenta","de lo afortunado que soy de tenerte en mi vida.","",
@@ -203,7 +204,6 @@ const texto=[
 ];
 const cont=document.getElementById('mensaje');
 const teamo=document.getElementById('teamo');
-const dolphins=document.getElementById('dolphins');
 
 function mostrarLineas(lines,cb){
   let i=0;
@@ -212,7 +212,7 @@ function mostrarLineas(lines,cb){
     const p=document.createElement('div'); p.className='line'; p.textContent=lines[i];
     cont.innerHTML=''; // borra la línea anterior
     cont.appendChild(p); i++;
-    const delay=(lines[i-1].trim()==="")?800:2500; 
+    const delay=(lines[i-1].trim()==="")?1000:4000; // más lento
     setTimeout(paso,delay);
   }
   paso();
@@ -223,11 +223,10 @@ function iniciarAtardecer(){
   requestAnimationFrame(draw);
   document.querySelector('.ui').style.display='flex';
   mostrarLineas(texto,()=>{
-    teamo.classList.add('show-teamo');
-    dolphins.classList.add('show');
-    setTimeout(()=>{dolphins.style.opacity=0;},6500);
+    teamo.classList.add('show-teamo'); // solo TE AMO, sin delfines
   });
 }
 </script>
+
 </body>
 </html>
