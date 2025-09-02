@@ -40,6 +40,7 @@
       text-align: center;
       color: white;
       width: 300px;
+      z-index: 10;
     }
     .login-box h2 {
       margin-bottom: 15px;
@@ -67,10 +68,48 @@
     .login-box button:hover {
       background: #ff1a8c;
     }
+    /* Página de 3 meses (oculta al inicio) */
+    .page {
+      display: none;
+      position: relative;
+      height: 100%;
+      width: 100%;
+      background: radial-gradient(circle at top, #0d0d0d, #000);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .page h1 {
+      font-size: 3rem;
+      color: #ff4da6;
+      margin-top: 80px;
+    }
+    .page h2 {
+      font-size: 2rem;
+      color: #ffd1f7;
+      margin-bottom: 20px;
+    }
+    .page p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .heart {
+      font-size: 4rem;
+      color: red;
+      animation: pulse 1s infinite;
+      margin-top: 20px;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
-  <!-- Estrellitas -->
+  <!-- Estrellitas cayendo -->
   <script>
     for(let i=0; i<50; i++){
       let star = document.createElement("div");
@@ -81,11 +120,29 @@
     }
   </script>
 
-  <div class="login-box">
+  <!-- Login -->
+  <div class="login-box" id="loginBox">
     <h2>Inserta la contraseña ✨</h2>
     <input type="password" id="password" placeholder="Contraseña">
     <button onclick="checkPassword()">Entrar</button>
     <p id="error" style="color: red; display: none;">Contraseña incorrecta ❌</p>
+  </div>
+
+  <!-- Página 3 meses -->
+  <div class="page" id="page3meses">
+    <h1>Feliz 3 Meses 💖</h1>
+    <h2>Para mi Saori hermosa ✨</h2>
+    <p>
+      Hoy celebramos tres meses juntos, tres meses de risas, de cariño,  
+      de momentos inolvidables y de un amor que sigue creciendo cada día.  
+      Gracias por ser mi razón de alegría, mi inspiración y mi paz.  
+    </p>
+    <p>
+      Esto apenas comienza, y sé que nos esperan miles de momentos más  
+      que guardaré en mi corazón por siempre.  
+      Te amo más de lo que las palabras pueden explicar 💕.
+    </p>
+    <div class="heart">❤️</div>
   </div>
 
   <script>
@@ -93,8 +150,9 @@
       const input = document.getElementById("password").value;
       const correct = "3/09/25"; // contraseña correcta
       if (input === correct) {
-        // Aquí va la redirección a tu página de 3 meses ❤️
-        window.location.href = "tres-meses.html";
+        document.getElementById("loginBox").style.display = "none"; // oculta login
+        document.getElementById("page3meses").style.display = "block"; // muestra la página
+        document.body.style.background = "radial-gradient(circle at top, #0d0d0d, #000)"; // cambia fondo
       } else {
         document.getElementById("error").style.display = "block";
       }
