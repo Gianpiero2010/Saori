@@ -1,221 +1,208 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acceso Especial — 3 Meses 💕</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
-    body { overflow: hidden; }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Acceso Especial — 3 Meses (Polo Norte)</title>
+<style>
+  :root{
+    --accent1:#ff4da6; --accent2:#ffd1f7; --text:#eaf6ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Arial; background:#000; color:var(--text);overflow:hidden}
 
-    /* ====== VISTA LOGIN (CIUDAD DE NOCHE + ESTRELLAS) ====== */
-    .login-screen {
-      position: fixed; inset: 0;
-      background: url('https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
-    }
-    .login-overlay {
-      position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.75));
-    }
+  /* ===== LOGIN (ciudad nocturna + estrellas) ===== */
+  .login-screen{position:fixed;inset:0;background:url('https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1920&q=80') center/cover fixed;}
+  .login-overlay{position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.8));}
+  .stars-layer{position:absolute;inset:0;pointer-events:none;}
+  .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;top:-10px;opacity:.9;box-shadow:0 0 6px rgba(255,255,255,.6)}
 
-    .stars-layer { position: absolute; inset: 0; pointer-events: none; }
-    .star {
-      position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; top: -10px; opacity: .8;
-      animation: fall linear infinite;
-    }
-    @keyframes fall {
-      0%   { transform: translateY(-10px) translateX(0); opacity: .9; }
-      100% { transform: translateY(110vh) translateX(-10vw); opacity: 0; }
-    }
+  .login-box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.6);padding:28px;border-radius:16px;width:320px;text-align:center;border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(6px)}
+  .login-box h2{color:var(--accent2);margin-bottom:8px}
+  .login-box p{font-size:.95rem;color:rgba(234,246,255,.9);margin-bottom:12px}
+  .input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--text);text-align:center;font-size:1rem;outline:none}
+  .btn{margin-top:12px;width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent1),#ff1a8c);color:#fff;font-weight:700;cursor:pointer}
+  .err{color:#ff9aa2;display:none;margin-top:8px}
 
-    .login-box {
-      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-      width: min(90vw, 360px); padding: 28px 22px; text-align: center; color: #fff;
-      background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px; backdrop-filter: blur(6px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    .login-box h2 { font-size: 1.4rem; letter-spacing: .3px; color: #ffd1f7; margin-bottom: 10px; }
-    .login-box p.helper { font-size: .9rem; opacity: .9; margin-bottom: 14px; }
-    .input {
-      width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.08); color: #fff; text-align: center; font-size: 1rem;
-      outline: none; transition: border-color .2s ease;
-    }
-    .input:focus { border-color: #ff4da6; }
-    .btn {
-      margin-top: 12px; width: 100%; padding: 12px 14px; border: none; border-radius: 12px; cursor: pointer;
-      background: linear-gradient(135deg,#ff4da6,#ff1a8c); color: #fff; font-weight: 600; font-size: 1rem;
-      box-shadow: 0 8px 18px rgba(255, 26, 140, .35); transition: transform .08s ease, filter .2s ease;
-    }
-    .btn:active { transform: translateY(1px); }
-    .error { display: none; color: #ff9aa2; margin-top: 10px; font-size: .95rem; }
+  /* ===== POLO NORTE SCENE ===== */
+  .polo-screen{display:none;position:fixed;inset:0;background:linear-gradient(#001024,#001018 40%, #020617 65%);}
 
-    /* ====== VISTA AURORA (PURO CÓDIGO) ====== */
-    .aurora-screen { position: fixed; inset: 0; display: none; background: radial-gradient(1200px 800px at 50% 120%, #02121e 0%, #010d18 40%, #000810 70%, #00050a 100%); }
+  /* Aurora layers (pure CSS blobs with blend) */
+  .aurora-wrap{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen}
+  .aurora{position:absolute;border-radius:50%;filter:blur(40px);opacity:.9}
+  .aur1{width:80vmax;height:50vmax;left:10%;top:-10%;background:radial-gradient(closest-side, rgba(102,255,200,.28), rgba(102,255,200,0) 55%);animation:drift1 22s ease-in-out infinite}
+  .aur2{width:70vmax;height:45vmax;left:40%;top:-20%;background:radial-gradient(closest-side, rgba(120,200,255,.25), rgba(120,200,255,0) 55%);animation:drift2 28s ease-in-out infinite}
+  .aur3{width:60vmax;height:40vmax;left:65%;top:-5%;background:radial-gradient(closest-side, rgba(200,120,255,.22), rgba(200,120,255,0) 55%);animation:drift3 26s ease-in-out infinite}
+  .aur4{width:90vmax;height:55vmax;left:-15%;top:-18%;background:radial-gradient(closest-side, rgba(255,110,200,.18), rgba(255,110,200,0) 55%);animation:drift4 30s ease-in-out infinite}
+  @keyframes drift1{0%{transform:translate(-8%,6%) scale(1)}50%{transform:translate(12%,-8%) scale(1.08)}100%{transform:translate(-8%,6%) scale(1)}}
+  @keyframes drift2{0%{transform:translate(28%,-12%) scale(1.05)}50%{transform:translate(-6%,10%) scale(1)}100%{transform:translate(28%,-12%) scale(1.05)}}
+  @keyframes drift3{0%{transform:translate(-30%,-10%) scale(1)}50%{transform:translate(8%,18%) scale(1.06)}100%{transform:translate(-30%,-10%) scale(1)}}
+  @keyframes drift4{0%{transform:translate(20%,30%) scale(1)}50%{transform:translate(-10%,-12%) scale(1.04)}100%{transform:translate(20%,30%) scale(1)}}
 
-    /* Capas de aurora: blobs de gradientes radiales con blur y mezcla */
-    .aurora-layer {
-      position: absolute; inset: -20% -20% -20% -20%; filter: blur(42px);
-      mix-blend-mode: screen; opacity: .8; pointer-events: none;
-    }
-    .a1, .a2, .a3, .a4 { position: absolute; width: 55vmax; height: 55vmax; border-radius: 50%; }
+  /* Canvas (ice spheres + ground) sits below UI */
+  #polarCanvas{position:absolute;inset:0;z-index:1;display:block}
 
-    /* Degradados radiales suaves para colores aurora */
-    .a1 { background: radial-gradient(closest-side, rgba(0,255,194,.35), rgba(0,255,194,0) 60%); }
-    .a2 { background: radial-gradient(closest-side, rgba(0,200,255,.35), rgba(0,200,255,0) 60%); }
-    .a3 { background: radial-gradient(closest-side, rgba(120,0,255,.35), rgba(120,0,255,0) 60%); }
-    .a4 { background: radial-gradient(closest-side, rgba(255,70,200,.25), rgba(255,70,200,0) 60%); }
+  /* UI text card centered */
+  .ui{position:absolute;inset:0;display:grid;place-items:center;z-index:4;pointer-events:none}
+  .card{max-width:880px;padding:26px 28px;border-radius:16px;background:linear-gradient(180deg, rgba(10,20,30,.45), rgba(10,18,24,.6));backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.06);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .title{font-size:clamp(24px,4vw,40px);color:#dff8ff;margin-bottom:12px;font-weight:700;text-align:center}
+  .message{white-space:pre-line;font-size:clamp(16px,2.2vw,20px);line-height:1.6;color:#eaf8ff}
 
-    /* Animaciones de deriva y ondulación */
-    @keyframes drift1 { 0%{ transform: translate(-10%, 10%) scale(1); } 50%{ transform: translate(15%, -5%) scale(1.1); } 100%{ transform: translate(-10%, 10%) scale(1); } }
-    @keyframes drift2 { 0%{ transform: translate(40%, -20%) scale(1.1); } 50%{ transform: translate(-5%, 10%) scale(1); } 100%{ transform: translate(40%, -20%) scale(1.1); } }
-    @keyframes drift3 { 0%{ transform: translate(-35%, -15%) scale(1); } 50%{ transform: translate(10%, 20%) scale(1.12); } 100%{ transform: translate(-35%, -15%) scale(1); } }
-    @keyframes drift4 { 0%{ transform: translate(25%, 30%) scale(1); } 50%{ transform: translate(-10%, -10%) scale(1.08); } 100%{ transform: translate(25%, 30%) scale(1); } }
+  /* TE AMO floating */
+  .teamo{position:fixed;left:50%;transform:translateX(-50%);bottom:8vh;font-weight:800;font-size:clamp(36px,6vw,72px);color:#cff6ff;text-shadow:0 0 24px rgba(160,255,230,.12);z-index:5;opacity:0}
+  .teamo.show{animation:teamoIn .9s ease forwards}
+  @keyframes teamoIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
-    .a1 { animation: drift1 18s ease-in-out infinite; }
-    .a2 { animation: drift2 22s ease-in-out infinite; }
-    .a3 { animation: drift3 26s ease-in-out infinite; }
-    .a4 { animation: drift4 30s ease-in-out infinite; }
+  /* volver btn */
+  .volver{position:fixed;right:18px;bottom:18px;z-index:5;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);padding:10px 14px;border-radius:12px;color:var(--text);cursor:pointer}
 
-    /* Sutile luz polar superior */
-    .aurora-glow {
-      position: absolute; inset: 0; background:
-        radial-gradient(1200px 400px at 50% -10%, rgba(90, 190, 255, .12), rgba(90,190,255,0) 70%),
-        radial-gradient(1400px 500px at 50% -12%, rgba(0, 255, 204, .10), rgba(0,255,204,0) 75%);
-      mix-blend-mode: screen; filter: blur(6px);
-    }
-
-    /* Contenido centrado */
-    .content {
-      position: relative; z-index: 5; display: grid; place-items: center; text-align: center; color: #eaf6ff;
-      padding: 24px; height: 100%; width: 100%;
-    }
-    .card {
-      max-width: 880px; padding: clamp(18px, 2.8vw, 36px); border-radius: 20px;
-      background: rgba(0, 10, 18, .35); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(8px);
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-    }
-    .title { font-size: clamp(26px, 4vw, 44px); color: #bfefff; letter-spacing: .3px; margin-bottom: 14px; font-weight: 700; }
-    .msg {
-      white-space: pre-line; /* respeta los saltos de línea */
-      font-size: clamp(16px, 2.2vw, 22px); line-height: 1.6; color: #e9f7ff;
-    }
-
-    /* Transiciones entre vistas */
-    .fade-out { animation: fadeOut .6s ease forwards; }
-    .fade-in  { animation: fadeIn  .6s ease forwards; }
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
-
-    /* Botón volver (opcional) */
-    .volver {
-      position: fixed; right: 16px; bottom: 16px; z-index: 6; display: none;
-      background: rgba(255,255,255,.08); color: #e9f7ff; border: 1px solid rgba(255,255,255,.15);
-      padding: 10px 14px; border-radius: 12px; cursor: pointer; backdrop-filter: blur(6px);
-    }
-  </style>
+  /* small responsive tweaks */
+  @media (max-width:520px){ .login-box{width:88vw} .card{padding:18px} }
+</style>
 </head>
 <body>
-  <!-- ====== LOGIN ====== -->
+  <!-- LOGIN -->
   <section class="login-screen" id="login">
     <div class="login-overlay"></div>
     <div class="stars-layer" id="stars"></div>
     <div class="login-box">
-      <h2>Acceso Especial ✨</h2>
-      <p class="helper">Ingresa la contraseña para continuar</p>
-      <input class="input" id="password" type="password" placeholder="Contraseña" autocomplete="off" />
-      <button class="btn" id="enterBtn">Entrar</button>
-      <div class="error" id="error">Contraseña incorrecta ❌</div>
+      <h2>Acceso especial ✨</h2>
+      <p>Inserta la contraseña para continuar</p>
+      <input id="pwd" class="input" type="password" placeholder="3/09/25" autocomplete="off" />
+      <button class="btn" id="enter">Entrar</button>
+      <div class="err" id="err">Contraseña incorrecta ❌</div>
     </div>
   </section>
 
-  <!-- ====== AURORA (PURO CÓDIGO) ====== -->
-  <section class="aurora-screen" id="aurora">
-    <div class="aurora-layer">
-      <div class="a1"></div>
-      <div class="a2"></div>
-      <div class="a3"></div>
-      <div class="a4"></div>
+  <!-- POLO NORTE -->
+  <section class="polo-screen" id="polo">
+    <div class="aurora-wrap" aria-hidden="true">
+      <div class="aurora aur1"></div>
+      <div class="aurora aur2"></div>
+      <div class="aurora aur3"></div>
+      <div class="aurora aur4"></div>
     </div>
-    <div class="aurora-glow"></div>
-    <div class="content">
+
+    <canvas id="polarCanvas"></canvas>
+
+    <div class="ui" id="ui">
       <div class="card">
         <div class="title">Amor, hoy cumplimos 3 meses</div>
-        <div class="msg" id="msgText"></div>
+        <div class="message" id="msg"></div>
       </div>
     </div>
+
+    <div class="teamo" id="teamo">TE AMO</div>
+    <button class="volver" id="volverBtn" style="display:none">Volver</button>
   </section>
 
-  <button class="volver" id="volverBtn" title="Volver al login">Volver</button>
+<script>
+// ====== Estrellas login ======
+(function spawnStars(){const layer=document.getElementById('stars');for(let i=0;i<60;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'vw';s.style.top=(-10 + Math.random()*20)+'vh';s.style.opacity=(0.6+Math.random()*0.4);s.style.transform='scale('+(0.6+Math.random()*1.2)+')';const dur=(2+Math.random()*3)+'s';s.style.animationDuration=dur;s.style.animationName='fall';s.style.animationTimingFunction='linear';s.style.animationIterationCount='infinite';s.style.animationDelay=(Math.random()*-5)+'s';layer.appendChild(s);} })();
 
-  <script>
-    // ===== Generar estrellas del login =====
-    function spawnStars() {
-      const layer = document.getElementById('stars');
-      const total = 60;
-      for (let i = 0; i < total; i++) {
-        const s = document.createElement('div');
-        s.className = 'star';
-        s.style.left = Math.random() * 100 + 'vw';
-        s.style.animationDuration = (Math.random() * 3 + 2) + 's';
-        s.style.animationDelay = (-Math.random() * 3) + 's';
-        layer.appendChild(s);
-      }
-    }
-    spawnStars();
+// ====== Canvas: aurora glow + ice spheres + polar ground ======
+const canvas=document.getElementById('polarCanvas');const ctx=canvas.getContext('2d');let W, H, DPR=window.devicePixelRatio||1;function resize(){W=window.innerWidth;H=window.innerHeight;canvas.width=W*DPR;canvas.height=H*DPR;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);}resize();addEventListener('resize', ()=>{resize(); initParticles();});
 
-    // ===== Lógica de acceso =====
-    const PASSWORD = '3/09/25';
-    const input = document.getElementById('password');
-    const btn = document.getElementById('enterBtn');
-    const err = document.getElementById('error');
-    const login = document.getElementById('login');
-    const aurora = document.getElementById('aurora');
-    const volverBtn = document.getElementById('volverBtn');
+// Particles: ice spheres
+let particles=[];const MAX_PART=30;function rand(min,max){return Math.random()*(max-min)+min}
+function createParticle(){const size=rand(10,42);return{
+  x: rand(0,W), y: rand(-H*0.6, -10), r:size, vx: rand(-0.2,0.2), vy: rand(0.25, 1.1), rot: rand(0,Math.PI*2), omega: rand(-0.02,0.02), alpha: rand(0.45,0.95)
+};}
+function initParticles(){particles=[];for(let i=0;i<MAX_PART;i++)particles.push(createParticle());}
+initParticles();
 
-    // Mensaje con saltos tal como lo pediste
-    const mensaje = `y todavía me cuesta creer\nlo rápido que pasa el\ntiempo cuando estoy contigo.\n\nEstos meses han sido de\nlos más lindos de mi\nvida porque los he compartido\na tu lado. Cada\n\ndía me haces sonreír, me\ndas fuerzas y me haces\nsentir especial solo con tu\nforma de ser. Gracias\n\npor aguantarme, por darme tu\ncariño y por demostrarme que\nel amor verdadero sí existe.\nEn tan poco tiempo\n\nte has convertido en una\nde las personas más importantes\nde mi vida, y no\nimagino mis días sin ti.\n\nOjalá que este sea solo\nel comienzo de muchos meses\ny años juntos, aprendiendo, creciendo\ny amándonos cada día más.\n\nTe amo con todo mi\ncorazón, Saori, y estoy feliz\nde tenerte como mi novia. 💕`;
+// soft aurora bands painted on canvas for extra depth (composite with CSS blobs)
+function drawAuroraBands(t){const g1=ctx.createLinearGradient(0,H*0.05,0,H*0.55);g1.addColorStop(0,'rgba(0,255,180,0.08)');g1.addColorStop(0.4,'rgba(50,200,255,0.06)');g1.addColorStop(1,'rgba(190,100,255,0.04)');ctx.fillStyle=g1;ctx.beginPath();ctx.ellipse(W*0.5,H*0.18,W*0.7, H*0.26, Math.sin(t*0.0004)*0.08,0,Math.PI*2);ctx.fill();}
 
-    document.getElementById('msgText').textContent = mensaje;
+// draw ground ice
+function drawGround(){const grd=ctx.createLinearGradient(0,H*0.72,0,H);grd.addColorStop(0,'#eaf7ff');grd.addColorStop(0.4,'#d0eefc');grd.addColorStop(1,'#bfe6fb');ctx.fillStyle=grd;ctx.beginPath();ctx.moveTo(0,H*0.7);ctx.quadraticCurveTo(W*0.25,H*0.68,W*0.5,H*0.7);ctx.quadraticCurveTo(W*0.75,H*0.72,W,H*0.7);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
+  // subtle shine lines
+  ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;for(let i=0;i<5;i++){ctx.beginPath();const y=H*0.72 + i*10;ctx.moveTo(10,y);ctx.bezierCurveTo(W*0.25,y+6,W*0.75,y-6,W-10,y);ctx.stroke();}
+}
 
-    function tryEnter() {
-      const val = input.value.trim();
-      if (val === PASSWORD) {
-        err.style.display = 'none';
-        login.classList.add('fade-out');
-        setTimeout(() => {
-          login.style.display = 'none';
-          aurora.style.display = 'block';
-          aurora.classList.add('fade-in');
-          volverBtn.style.display = 'inline-flex';
-        }, 520);
-      } else {
-        err.style.display = 'block';
-      }
-    }
+// draw particles (ice spheres)
+function drawParticles(t, dt){particles.forEach(p =>{
+  p.x += p.vx*dt; p.y += p.vy*dt; p.rot += p.omega*dt;
+  if(p.y - p.r > H*0.9){ // reset
+    Object.assign(p, createParticle()); p.y = rand(-H*0.6,-10);
+  }
+  // draw translucent sphere with highlight
+  ctx.save(); ctx.globalAlpha = p.alpha; ctx.translate(p.x,p.y); ctx.rotate(Math.sin(t*0.001 + p.rot)*0.1);
+  // main body
+  const rg = ctx.createRadialGradient(-p.r*0.25, -p.r*0.25, p.r*0.05, 0,0,p.r);
+  rg.addColorStop(0,'rgba(255,255,255,0.9)'); rg.addColorStop(0.25,'rgba(220,240,255,0.9)'); rg.addColorStop(0.9,'rgba(200,230,255,0.14)'); rg.addColorStop(1,'rgba(200,230,255,0.04)');
+  ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill();
+  // rim
+  ctx.strokeStyle='rgba(255,255,255,0.12)'; ctx.lineWidth=1; ctx.stroke();
+  // tiny inner sparkle
+  ctx.globalAlpha = Math.min(1,p.alpha+0.2);
+  ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.beginPath(); ctx.ellipse(-p.r*0.3,-p.r*0.4,p.r*0.18,p.r*0.12,0,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+});}
 
-    btn.addEventListener('click', tryEnter);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') tryEnter();
-    });
+let last=performance.now();function loop(ts){const dt=(ts-last);last=ts;ctx.clearRect(0,0,W,H);drawAuroraBands(ts);drawParticles(ts, dt);drawGround();requestAnimationFrame(loop);} 
 
-    // Volver al login (opcional)
-    volverBtn.addEventListener('click', () => {
-      aurora.classList.remove('fade-in');
-      aurora.classList.add('fade-out');
-      setTimeout(() => {
-        aurora.style.display = 'none';
-        aurora.classList.remove('fade-out');
-        login.style.display = 'block';
-        login.classList.remove('fade-out');
-        login.classList.add('fade-in');
-        setTimeout(() => login.classList.remove('fade-in'), 600);
-        volverBtn.style.display = 'none';
-        input.value = '';
-        input.focus();
-      }, 520);
-    });
-  </script>
+// ===== Text lines and typewriter per line =====
+const lines = [
+  "y todavía me cuesta creer",
+  "lo rápido que pasa el",
+  "tiempo cuando estoy contigo.",
+  "",
+  "Estos meses han sido de",
+  "los más lindos de mi",
+  "vida porque los he compartido",
+  "a tu lado. Cada",
+  "",
+  "día me haces sonreír, me",
+  "das fuerzas y me haces",
+  "sentir especial solo con tu",
+  "forma de ser. Gracias",
+  "",
+  "por aguantarme, por darme tu",
+  "cariño y por demostrarme que",
+  "el amor verdadero sí existe.",
+  "En tan poco tiempo",
+  "",
+  "te has convertido en una",
+  "de las personas más importantes",
+  "de mi vida, y no",
+  "imagino mis días sin ti.",
+  "",
+  "Ojalá que este sea solo",
+  "el comienzo de muchos meses",
+  "y años juntos, aprendiendo, creciendo",
+  "y amándonos cada día más.",
+  "",
+  "Te amo con todo mi",
+  "corazón, Saori, y estoy feliz",
+  "de tenerte como mi novia. 💕"
+];
+const msgEl = document.getElementById('msg');let lineIndex=0;
+
+function typeLine(line, cb){msgEl.innerHTML='';const span=document.createElement('div');span.className='line';msgEl.appendChild(span);let i=0;function step(){if(i<=line.length){span.textContent=line.slice(0,i);i++;setTimeout(step,24);}else{cb && cb();}}step();}
+
+function showNextLine(){if(lineIndex>=lines.length){document.getElementById('teamo').classList.add('show');return;}const line=lines[lineIndex++]; if(line.trim()===''){ // blank pause
+  msgEl.innerHTML=''; setTimeout(showNextLine,800);
+ } else { typeLine(line, ()=>{ setTimeout(showNextLine, 1200); }); }}
+
+// ===== Access logic =====
+const ENTER_PWD='3/09/25';const enterBtn=document.getElementById('enter');const pwdIn=document.getElementById('pwd');const err=document.getElementById('err');const loginSec=document.getElementById('login');const polo=document.getElementById('polo');const volver=document.getElementById('volverBtn');
+
+function unlock(){if(pwdIn.value.trim()===ENTER_PWD){err.style.display='none';loginSec.style.display='none';polo.style.display='block';document.getElementById('volverBtn').style.display='inline-block'; // start canvas anim
+  last=performance.now();loop(last); // start canvas loop
+  // small delay to let aurora blobs show
+  setTimeout(()=>{showNextLine();},600);
+} else { err.style.display='block'; setTimeout(()=>{err.style.display='none'},2200); }}
+
+enterBtn.addEventListener('click',unlock);pwdIn.addEventListener('keydown',(e)=>{if(e.key==='Enter')unlock();});
+
+volver.addEventListener('click',()=>{ // go back
+  polo.style.display='none';loginSec.style.display='block';pwdIn.value='';document.getElementById('teamo').classList.remove('show');
+});
+
+// Initialize
+function init(){initParticles();}
+init();
+</script>
 </body>
 </html>
