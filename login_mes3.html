@@ -1,162 +1,221 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acceso Especial ✨</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso Especial — 3 Meses 💕</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html {
-      height: 100%;
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+    body { overflow: hidden; }
+
+    /* ====== VISTA LOGIN (CIUDAD DE NOCHE + ESTRELLAS) ====== */
+    .login-screen {
+      position: fixed; inset: 0;
+      background: url('https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
     }
-    /* Fondo ciudad nocturna */
-    body {
-      background: url('https://images.unsplash.com/photo-1505761671935-60b3a7427bad?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
-      background-size: cover;
+    .login-overlay {
+      position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.75));
     }
-    /* Estrellas cayendo */
+
+    .stars-layer { position: absolute; inset: 0; pointer-events: none; }
     .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: white;
-      top: -10px;
+      position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; top: -10px; opacity: .8;
       animation: fall linear infinite;
     }
     @keyframes fall {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
+      0%   { transform: translateY(-10px) translateX(0); opacity: .9; }
+      100% { transform: translateY(110vh) translateX(-10vw); opacity: 0; }
     }
-    /* Cuadro de login */
+
     .login-box {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.7);
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      color: white;
-      width: 300px;
-      z-index: 10;
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: min(90vw, 360px); padding: 28px 22px; text-align: center; color: #fff;
+      background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px; backdrop-filter: blur(6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-    .login-box h2 {
-      margin-bottom: 15px;
-      color: #ff4da6;
+    .login-box h2 { font-size: 1.4rem; letter-spacing: .3px; color: #ffd1f7; margin-bottom: 10px; }
+    .login-box p.helper { font-size: .9rem; opacity: .9; margin-bottom: 14px; }
+    .input {
+      width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08); color: #fff; text-align: center; font-size: 1rem;
+      outline: none; transition: border-color .2s ease;
     }
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 1rem;
+    .input:focus { border-color: #ff4da6; }
+    .btn {
+      margin-top: 12px; width: 100%; padding: 12px 14px; border: none; border-radius: 12px; cursor: pointer;
+      background: linear-gradient(135deg,#ff4da6,#ff1a8c); color: #fff; font-weight: 600; font-size: 1rem;
+      box-shadow: 0 8px 18px rgba(255, 26, 140, .35); transition: transform .08s ease, filter .2s ease;
     }
-    .login-box button {
-      padding: 10px 20px;
-      border: none;
-      background: #ff4da6;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: 0.3s;
+    .btn:active { transform: translateY(1px); }
+    .error { display: none; color: #ff9aa2; margin-top: 10px; font-size: .95rem; }
+
+    /* ====== VISTA AURORA (PURO CÓDIGO) ====== */
+    .aurora-screen { position: fixed; inset: 0; display: none; background: radial-gradient(1200px 800px at 50% 120%, #02121e 0%, #010d18 40%, #000810 70%, #00050a 100%); }
+
+    /* Capas de aurora: blobs de gradientes radiales con blur y mezcla */
+    .aurora-layer {
+      position: absolute; inset: -20% -20% -20% -20%; filter: blur(42px);
+      mix-blend-mode: screen; opacity: .8; pointer-events: none;
     }
-    .login-box button:hover {
-      background: #ff1a8c;
+    .a1, .a2, .a3, .a4 { position: absolute; width: 55vmax; height: 55vmax; border-radius: 50%; }
+
+    /* Degradados radiales suaves para colores aurora */
+    .a1 { background: radial-gradient(closest-side, rgba(0,255,194,.35), rgba(0,255,194,0) 60%); }
+    .a2 { background: radial-gradient(closest-side, rgba(0,200,255,.35), rgba(0,200,255,0) 60%); }
+    .a3 { background: radial-gradient(closest-side, rgba(120,0,255,.35), rgba(120,0,255,0) 60%); }
+    .a4 { background: radial-gradient(closest-side, rgba(255,70,200,.25), rgba(255,70,200,0) 60%); }
+
+    /* Animaciones de deriva y ondulación */
+    @keyframes drift1 { 0%{ transform: translate(-10%, 10%) scale(1); } 50%{ transform: translate(15%, -5%) scale(1.1); } 100%{ transform: translate(-10%, 10%) scale(1); } }
+    @keyframes drift2 { 0%{ transform: translate(40%, -20%) scale(1.1); } 50%{ transform: translate(-5%, 10%) scale(1); } 100%{ transform: translate(40%, -20%) scale(1.1); } }
+    @keyframes drift3 { 0%{ transform: translate(-35%, -15%) scale(1); } 50%{ transform: translate(10%, 20%) scale(1.12); } 100%{ transform: translate(-35%, -15%) scale(1); } }
+    @keyframes drift4 { 0%{ transform: translate(25%, 30%) scale(1); } 50%{ transform: translate(-10%, -10%) scale(1.08); } 100%{ transform: translate(25%, 30%) scale(1); } }
+
+    .a1 { animation: drift1 18s ease-in-out infinite; }
+    .a2 { animation: drift2 22s ease-in-out infinite; }
+    .a3 { animation: drift3 26s ease-in-out infinite; }
+    .a4 { animation: drift4 30s ease-in-out infinite; }
+
+    /* Sutile luz polar superior */
+    .aurora-glow {
+      position: absolute; inset: 0; background:
+        radial-gradient(1200px 400px at 50% -10%, rgba(90, 190, 255, .12), rgba(90,190,255,0) 70%),
+        radial-gradient(1400px 500px at 50% -12%, rgba(0, 255, 204, .10), rgba(0,255,204,0) 75%);
+      mix-blend-mode: screen; filter: blur(6px);
     }
-    /* Página de 3 meses (oculta al inicio) */
-    .page {
-      display: none;
-      position: relative;
-      height: 100%;
-      width: 100%;
-      background: radial-gradient(circle at top, #0d0d0d, #000);
-      color: white;
-      text-align: center;
-      padding: 20px;
-      overflow: hidden;
+
+    /* Contenido centrado */
+    .content {
+      position: relative; z-index: 5; display: grid; place-items: center; text-align: center; color: #eaf6ff;
+      padding: 24px; height: 100%; width: 100%;
     }
-    .page h1 {
-      font-size: 3rem;
-      color: #ff4da6;
-      margin-top: 80px;
+    .card {
+      max-width: 880px; padding: clamp(18px, 2.8vw, 36px); border-radius: 20px;
+      background: rgba(0, 10, 18, .35); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
     }
-    .page h2 {
-      font-size: 2rem;
-      color: #ffd1f7;
-      margin-bottom: 20px;
+    .title { font-size: clamp(26px, 4vw, 44px); color: #bfefff; letter-spacing: .3px; margin-bottom: 14px; font-weight: 700; }
+    .msg {
+      white-space: pre-line; /* respeta los saltos de línea */
+      font-size: clamp(16px, 2.2vw, 22px); line-height: 1.6; color: #e9f7ff;
     }
-    .page p {
-      font-size: 1.2rem;
-      line-height: 1.6;
-      margin: 10px 0;
-    }
-    .heart {
-      font-size: 4rem;
-      color: red;
-      animation: pulse 1s infinite;
-      margin-top: 20px;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-      100% { transform: scale(1); }
+
+    /* Transiciones entre vistas */
+    .fade-out { animation: fadeOut .6s ease forwards; }
+    .fade-in  { animation: fadeIn  .6s ease forwards; }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Botón volver (opcional) */
+    .volver {
+      position: fixed; right: 16px; bottom: 16px; z-index: 6; display: none;
+      background: rgba(255,255,255,.08); color: #e9f7ff; border: 1px solid rgba(255,255,255,.15);
+      padding: 10px 14px; border-radius: 12px; cursor: pointer; backdrop-filter: blur(6px);
     }
   </style>
 </head>
 <body>
-  <!-- Estrellitas cayendo -->
-  <script>
-    for(let i=0; i<50; i++){
-      let star = document.createElement("div");
-      star.className = "star";
-      star.style.left = Math.random()*100 + "vw";
-      star.style.animationDuration = (Math.random()*3 + 2) + "s";
-      document.body.appendChild(star);
-    }
-  </script>
+  <!-- ====== LOGIN ====== -->
+  <section class="login-screen" id="login">
+    <div class="login-overlay"></div>
+    <div class="stars-layer" id="stars"></div>
+    <div class="login-box">
+      <h2>Acceso Especial ✨</h2>
+      <p class="helper">Ingresa la contraseña para continuar</p>
+      <input class="input" id="password" type="password" placeholder="Contraseña" autocomplete="off" />
+      <button class="btn" id="enterBtn">Entrar</button>
+      <div class="error" id="error">Contraseña incorrecta ❌</div>
+    </div>
+  </section>
 
-  <!-- Login -->
-  <div class="login-box" id="loginBox">
-    <h2>Inserta la contraseña ✨</h2>
-    <input type="password" id="password" placeholder="Contraseña">
-    <button onclick="checkPassword()">Entrar</button>
-    <p id="error" style="color: red; display: none;">Contraseña incorrecta ❌</p>
-  </div>
+  <!-- ====== AURORA (PURO CÓDIGO) ====== -->
+  <section class="aurora-screen" id="aurora">
+    <div class="aurora-layer">
+      <div class="a1"></div>
+      <div class="a2"></div>
+      <div class="a3"></div>
+      <div class="a4"></div>
+    </div>
+    <div class="aurora-glow"></div>
+    <div class="content">
+      <div class="card">
+        <div class="title">Amor, hoy cumplimos 3 meses</div>
+        <div class="msg" id="msgText"></div>
+      </div>
+    </div>
+  </section>
 
-  <!-- Página 3 meses -->
-  <div class="page" id="page3meses">
-    <h1>Feliz 3 Meses 💖</h1>
-    <h2>Para mi Saori hermosa ✨</h2>
-    <p>
-      Hoy celebramos tres meses juntos, tres meses de risas, de cariño,  
-      de momentos inolvidables y de un amor que sigue creciendo cada día.  
-      Gracias por ser mi razón de alegría, mi inspiración y mi paz.  
-    </p>
-    <p>
-      Esto apenas comienza, y sé que nos esperan miles de momentos más  
-      que guardaré en mi corazón por siempre.  
-      Te amo más de lo que las palabras pueden explicar 💕.
-    </p>
-    <div class="heart">❤️</div>
-  </div>
+  <button class="volver" id="volverBtn" title="Volver al login">Volver</button>
 
   <script>
-    function checkPassword() {
-      const input = document.getElementById("password").value;
-      const correct = "3/09/25"; // contraseña correcta
-      if (input === correct) {
-        document.getElementById("loginBox").style.display = "none"; // oculta login
-        document.getElementById("page3meses").style.display = "block"; // muestra la página
-        document.body.style.background = "radial-gradient(circle at top, #0d0d0d, #000)"; // cambia fondo
-      } else {
-        document.getElementById("error").style.display = "block";
+    // ===== Generar estrellas del login =====
+    function spawnStars() {
+      const layer = document.getElementById('stars');
+      const total = 60;
+      for (let i = 0; i < total; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        s.style.animationDelay = (-Math.random() * 3) + 's';
+        layer.appendChild(s);
       }
     }
+    spawnStars();
+
+    // ===== Lógica de acceso =====
+    const PASSWORD = '3/09/25';
+    const input = document.getElementById('password');
+    const btn = document.getElementById('enterBtn');
+    const err = document.getElementById('error');
+    const login = document.getElementById('login');
+    const aurora = document.getElementById('aurora');
+    const volverBtn = document.getElementById('volverBtn');
+
+    // Mensaje con saltos tal como lo pediste
+    const mensaje = `y todavía me cuesta creer\nlo rápido que pasa el\ntiempo cuando estoy contigo.\n\nEstos meses han sido de\nlos más lindos de mi\nvida porque los he compartido\na tu lado. Cada\n\ndía me haces sonreír, me\ndas fuerzas y me haces\nsentir especial solo con tu\nforma de ser. Gracias\n\npor aguantarme, por darme tu\ncariño y por demostrarme que\nel amor verdadero sí existe.\nEn tan poco tiempo\n\nte has convertido en una\nde las personas más importantes\nde mi vida, y no\nimagino mis días sin ti.\n\nOjalá que este sea solo\nel comienzo de muchos meses\ny años juntos, aprendiendo, creciendo\ny amándonos cada día más.\n\nTe amo con todo mi\ncorazón, Saori, y estoy feliz\nde tenerte como mi novia. 💕`;
+
+    document.getElementById('msgText').textContent = mensaje;
+
+    function tryEnter() {
+      const val = input.value.trim();
+      if (val === PASSWORD) {
+        err.style.display = 'none';
+        login.classList.add('fade-out');
+        setTimeout(() => {
+          login.style.display = 'none';
+          aurora.style.display = 'block';
+          aurora.classList.add('fade-in');
+          volverBtn.style.display = 'inline-flex';
+        }, 520);
+      } else {
+        err.style.display = 'block';
+      }
+    }
+
+    btn.addEventListener('click', tryEnter);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') tryEnter();
+    });
+
+    // Volver al login (opcional)
+    volverBtn.addEventListener('click', () => {
+      aurora.classList.remove('fade-in');
+      aurora.classList.add('fade-out');
+      setTimeout(() => {
+        aurora.style.display = 'none';
+        aurora.classList.remove('fade-out');
+        login.style.display = 'block';
+        login.classList.remove('fade-out');
+        login.classList.add('fade-in');
+        setTimeout(() => login.classList.remove('fade-in'), 600);
+        volverBtn.style.display = 'none';
+        input.value = '';
+        input.focus();
+      }, 520);
+    });
   </script>
 </body>
 </html>
