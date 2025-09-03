@@ -184,13 +184,16 @@
           lanzarFuegosArtificiales(true);
           easter.style.display = 'flex';
           easter.innerHTML = '<p>¡Feliz 1 mes! 🎉🎆</p>';
-        } else if (value === 'mes 2') {
-          // NUEVO: redirige a login_mes2.html
-          window.location.href = 'login_mes2.html';
-        } else {
-          mostrarEasterEgg(value);
-        }
-      }
+       } else if (value === 'mes 2') {
+  // NUEVO: redirige a login_mes2.html
+  window.location.href = 'login_mes2.html';
+} else if (value === 'mes 3') {
+  // NUEVO: redirige a login_mes3.html
+  window.location.href = 'login_mes3.html';
+} else {
+  mostrarEasterEgg(value);
+}
+
     });
 
     function crearEstrellas(num) {
@@ -349,3 +352,4 @@
   </script>
 </body>
 </html>
+
