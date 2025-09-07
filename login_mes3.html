@@ -185,5 +185,36 @@ function showNextLine(){if(lineIndex>=lines.length){document.getElementById('tea
   msgEl.innerHTML=''; setTimeout(showNextLine,800);
  } else { typeLine(line, ()=>{ setTimeout(showNextLine, 1200); }); }}
 
+
+<script>
 // ===== Access logic =====
-const ENTER_PWD='3/09/25
+const ENTER_PWD = "03/09/25";
+const HEART_PWD = "cOraz0n";
+
+const pwdInput = document.getElementById("pwd");
+const enterBtn = document.getElementById("enter");
+const err = document.getElementById("err");
+
+enterBtn.addEventListener("click", () => {
+  const val = pwdInput.value.trim();
+  if (val === ENTER_PWD) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("polo").style.display = "block";
+    loop();
+    showNextLine();
+    document.getElementById("volverBtn").style.display = "block";
+  } else if (val === HEART_PWD) {
+    window.location.href = "corazon.html";
+  } else {
+    err.style.display = "block";
+    setTimeout(() => (err.style.display = "none"), 2000);
+  }
+});
+
+// volver btn
+document.getElementById("volverBtn").addEventListener("click", () => {
+  document.getElementById("polo").style.display = "none";
+  document.getElementById("login").style.display = "block";
+  pwdInput.value = "";
+});
+</script>
