@@ -186,23 +186,4 @@ function showNextLine(){if(lineIndex>=lines.length){document.getElementById('tea
  } else { typeLine(line, ()=>{ setTimeout(showNextLine, 1200); }); }}
 
 // ===== Access logic =====
-const ENTER_PWD='3/09/25';const enterBtn=document.getElementById('enter');const pwdIn=document.getElementById('pwd');const err=document.getElementById('err');const loginSec=document.getElementById('login');const polo=document.getElementById('polo');const volver=document.getElementById('volverBtn');
-
-function unlock(){if(pwdIn.value.trim()===ENTER_PWD){err.style.display='none';loginSec.style.display='none';polo.style.display='block';document.getElementById('volverBtn').style.display='inline-block'; // start canvas anim
-  last=performance.now();loop(last); // start canvas loop
-  // small delay to let aurora blobs show
-  setTimeout(()=>{showNextLine();},600);
-} else { err.style.display='block'; setTimeout(()=>{err.style.display='none'},2200); }}
-
-enterBtn.addEventListener('click',unlock);pwdIn.addEventListener('keydown',(e)=>{if(e.key==='Enter')unlock();});
-
-volver.addEventListener('click',()=>{ // go back
-  polo.style.display='none';loginSec.style.display='block';pwdIn.value='';document.getElementById('teamo').classList.remove('show');
-});
-
-// Initialize
-function init(){initParticles();}
-init();
-</script>
-</body>
-</html>
+const ENTER_PWD='3/09/25
