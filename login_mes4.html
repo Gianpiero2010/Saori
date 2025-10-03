@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
 <meta charset="utf-8" />
@@ -59,6 +59,8 @@
     margin-bottom:18px;
   }
 
+  .field{ margin:14px auto; width:100%; }
+
   input[type="password"]{
     width:100%;
     padding:14px 18px;
@@ -67,29 +69,22 @@
     background:var(--glass);
     color:#eaf6ff;
     font-size:15px;
-    outline:none;
     text-align:center;
   }
 
   .btn{
     width:100%;
     padding:12px;
-    margin-top:12px;
+    margin-top:6px;
     border-radius:10px;
     border:none;
     cursor:pointer;
     font-weight:700;
-    letter-spacing:0.6px;
     background: linear-gradient(90deg,var(--accent1), var(--accent2));
     color:#041017;
   }
 
-  .error{
-    color:#ffb3c9;
-    font-size:13px;
-    margin-top:10px;
-    display:none;
-  }
+  .error{color:#ffb3c9;font-size:13px;margin-top:10px;display:none;}
 
   .scene{
     position:fixed;
@@ -106,51 +101,52 @@
     position:absolute; left:0; top:0; width:100%; height:100%; z-index:5;
   }
 
-  .poemWrap{
-    z-index:7;
-    position:relative;
-    max-width:900px;
-    margin:0 auto;
-    text-align:center;
-    padding:20px;
-  }
-
-  .line{
-    font-size:20px;
-    color:white;
+  .aurora {
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: radial-gradient(circle at 50% 80%, rgba(0,255,200,0.3), transparent 60%),
+                radial-gradient(circle at 60% 70%, rgba(255,0,255,0.2), transparent 60%),
+                radial-gradient(circle at 40% 65%, rgba(0,150,255,0.3), transparent 60%);
+    animation: auroraAnim 12s ease-in-out infinite alternate;
     opacity:0;
-    margin:12px 0;
-    transition: opacity 1s ease;
-    text-shadow:0 0 10px rgba(255,255,255,0.4);
+    z-index:6;
+  }
+  @keyframes auroraAnim {
+    0%{transform:translateY(0);}
+    100%{transform:translateY(-20px);}
   }
 
   .couple {
     position:absolute;
-    bottom:40px;
-    width:120px;
-    height:180px;
+    bottom:60px;
+    width:120px; height:200px;
     background:linear-gradient(to top, rgba(255,255,255,0.9), transparent);
     border-radius:60px 60px 20px 20px;
     left:50%;
     transform:translateX(-50%);
     opacity:0;
     transition:opacity 2s ease;
+    z-index:7;
   }
 
-  .aurora {
+  .poemWrap{
+    z-index:8;
     position:absolute;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: radial-gradient(circle at 50% 80%, rgba(0,255,200,0.4), transparent 60%),
-                radial-gradient(circle at 60% 70%, rgba(255,0,255,0.3), transparent 60%),
-                radial-gradient(circle at 40% 65%, rgba(0,150,255,0.3), transparent 60%);
-    animation: auroraAnim 12s ease-in-out infinite alternate;
-    opacity:0;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    width:90%;
+    max-width:900px;
   }
 
-  @keyframes auroraAnim {
-    0%{transform:translateY(0);}
-    100%{transform:translateY(-20px);}
+  .line{
+    font-size:22px;
+    color:white;
+    opacity:0;
+    transition:opacity 1s ease;
+    text-shadow:0 0 12px rgba(255,255,255,0.6);
   }
 </style>
 </head>
@@ -160,7 +156,9 @@
   <div class="login-card" id="loginCard">
     <div class="title">🌌 Bienvenida, Saori</div>
     <div class="sub">Un rincón secreto — solo para nosotros</div>
-    <input id="pw" type="password" placeholder="Contraseña"/>
+    <div class="field">
+      <input id="pw" type="password" placeholder="Contraseña" autocomplete="off" />
+    </div>
     <button class="btn" id="enterBtn">Entrar</button>
     <div class="error" id="errorMsg">Contraseña incorrecta</div>
   </div>
@@ -173,7 +171,7 @@
   </div>
 
 <script>
-/* Fondo partículas login */
+/* Fondo estrellas login */
 (function(){
   const c=document.getElementById("bgCanvas"),ctx=c.getContext("2d");
   let W=c.width=innerWidth,H=c.height=innerHeight;
@@ -258,14 +256,15 @@ por amarme tanto.`.split("\n");
   let i=0;
   function showLine(){
     if(i>=poem.length) return;
+    wrap.innerHTML="";
     const line=document.createElement("div");
     line.className="line";
     line.textContent=poem[i];
     wrap.appendChild(line);
     setTimeout(()=>line.style.opacity=1,100);
-    setTimeout(()=>line.style.opacity=0,4000); // desaparece después
+    setTimeout(()=>line.style.opacity=0,3500);
     i++;
-    setTimeout(showLine,4500);
+    setTimeout(showLine,4000);
   }
   showLine();
 }
