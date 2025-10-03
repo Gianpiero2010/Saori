@@ -1,150 +1,479 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Login Mes 4</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Login Futurista - Mes 4</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{
-  width:100%;height:100%;
-  background:#000;
-  font-family:'Segoe UI',sans-serif;
-  overflow:hidden;
-  color:#fff;
-}
+  :root{
+    --bg1:#030313;
+    --bg2:#05041a;
+    --neon1:#ff66c4;
+    --neon2:#00ffee;
+    --glass: rgba(255,255,255,0.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: "Segoe UI", Inter, system-ui, sans-serif;
+    background: linear-gradient(180deg,var(--bg1),var(--bg2));
+    overflow:hidden;
+    color:#eaf6ff;
+  }
 
-/* Fondo canvas */
-#bgCanvas{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  z-index:0;
-  background:#000;
-}
+  /* ---------- background canvas for login (particles + traces) ---------- */
+  canvas#bgCanvas {
+    position:fixed; left:0; top:0; width:100%; height:100%; z-index:0;
+    display:block;
+  }
 
-/* Login */
-#loginBox{
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  text-align:center;
-  z-index:2;
-}
-#loginBox h2{
-  color:#fff;
-  margin-bottom:20px;
-  text-shadow:0 0 20px rgba(0,200,255,0.7);
-}
-#pwd{
-  padding:12px 18px;
-  border:none;
-  border-radius:6px;
-  background:rgba(255,255,255,0.1);
-  color:#fff;
-  font-size:18px;
-  outline:none;
-  box-shadow:0 0 15px rgba(0,200,255,0.5);
-  text-align:center;
-}
-#pwd::placeholder{color:rgba(255,255,255,0.6);}
-#btn{
-  margin-top:15px;
-  padding:10px 25px;
-  border:none;
-  background:linear-gradient(90deg,#00f,#0ff);
-  color:#fff;
-  font-size:16px;
-  border-radius:20px;
-  cursor:pointer;
-  transition:0.3s;
-}
-#btn:hover{transform:scale(1.05);}
+  /* centered login glass card */
+  .login-card {
+    position:fixed;
+    z-index:6;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%) scale(0.98);
+    width:420px;
+    padding:30px;
+    border-radius:18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(0,0,0,0.2) inset;
+    backdrop-filter: blur(10px) saturate(120%);
+    text-align:center;
+    transition: transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms;
+  }
 
-/* Escena romántica */
-#scene{
-  position:absolute;
-  top:0;left:0;width:100%;height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  z-index:1;
-  opacity:0;
-  transition:opacity 2s ease;
-  text-align:center;
-}
+  .login-card.enter {
+    transform: translate(-50%,-50%) scale(1);
+    opacity:1;
+  }
 
-/* Siluetas */
-#couple{
-  position:absolute;
-  bottom:0;left:50%;
-  transform:translateX(-50%);
-  width:180px;height:220px;
-}
-.person{
-  width:80px;height:200px;
-  background:rgba(0,0,0,0.8);
-  border-radius:50% 50% 20% 20%;
-  position:absolute;bottom:0;
-}
-.p1{left:0;}
-.p2{right:0;}
-.head{
-  width:60px;height:60px;
-  background:rgba(0,0,0,0.85);
-  border-radius:50%;
-  position:absolute;top:-40px;left:10px;
-}
+  .title {
+    font-weight:800;
+    font-size:22px;
+    margin-bottom:6px;
+    background: linear-gradient(90deg,var(--neon1),var(--neon2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    text-shadow: 0 0 18px rgba(255,102,196,0.12);
+  }
+  .sub {
+    font-size:13px; color:rgba(230,240,255,0.75); margin-bottom:18px;
+  }
 
-/* Texto centrado */
-#poem{
-  max-width:80%;
-  font-size:22px;
-  color:#fff;
-  text-shadow:0 0 15px rgba(255,200,255,0.4);
-}
-.line{
-  opacity:0;
-  transform:translateY(40px);
-  transition:opacity 1.5s ease, transform 1.5s ease;
-  margin:12px 0;
-}
-.line.show{
-  opacity:1;
-  transform:translateY(0);
-}
-.line.hide{
-  opacity:0;
-  transform:translateY(-40px);
-}
+  .field { margin:10px auto; width:100%; position:relative; }
+
+  /* neon glass input */
+  .neon-input {
+    width:100%;
+    padding:14px 18px;
+    font-size:15px;
+    border-radius:12px;
+    border:none;
+    outline:none;
+    text-align:center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow:
+      0 6px 30px rgba(0,0,0,0.6),
+      inset 0 0 18px rgba(255,255,255,0.02),
+      0 0 24px rgba(0,255,238,0.02);
+    color:#eaf6ff;
+    transition: box-shadow 220ms, transform 160ms;
+  }
+  .neon-input::placeholder { color:rgba(230,240,255,0.45); }
+  .neon-input:focus {
+    transform: translateY(-3px);
+    box-shadow:
+      0 18px 60px rgba(0,0,0,0.6),
+      0 0 40px rgba(0,255,238,0.12),
+      inset 0 0 22px rgba(255,255,255,0.03);
+  }
+
+  /* button with ripple */
+  .btn {
+    width:100%;
+    margin-top:14px;
+    padding:12px 18px;
+    border-radius:12px;
+    border:none;
+    font-weight:800;
+    cursor:pointer;
+    letter-spacing:0.6px;
+    background: linear-gradient(90deg,var(--neon1), var(--neon2));
+    color:#041017;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(255,102,196,0.12);
+    position:relative;
+    overflow:hidden;
+  }
+  .btn:active{ transform:scale(.995); }
+
+  .hint {
+    font-size:12px; color:rgba(230,240,255,0.66); margin-top:12px;
+  }
+  .error { color:#ffb3c9; font-size:13px; margin-top:10px; display:none; }
+
+  /* ---------- scene overlay (romantic) ---------- */
+  .scene {
+    position:fixed; left:0; top:0; width:100%; height:100%;
+    z-index:8; display:none; align-items:center; justify-content:center;
+    pointer-events:auto;
+  }
+
+  canvas#sceneCanvas {
+    position:absolute; left:0; top:0; width:100%; height:100%; z-index:9;
+  }
+
+  /* poem center container */
+  .poemCenter {
+    position:absolute; z-index:12; left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:100%; max-width:980px; pointer-events:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .poemLine {
+    font-size:24px; color:rgba(255,255,255,0.98); text-align:center;
+    text-shadow: 0 0 18px rgba(255,180,220,0.12);
+    opacity:0; transform: translateY(18px) scale(0.98);
+    transition: opacity 900ms ease, transform 900ms cubic-bezier(.2,.9,.2,1);
+    max-width:88%;
+    line-height:1.3;
+  }
+  .poemLine.show {
+    opacity:1; transform: translateY(0) scale(1);
+  }
+  .poemLine.hide {
+    opacity:0; transform: translateY(-26px) scale(.98);
+  }
+
+  /* final message */
+  .finalMsg {
+    font-size:30px;
+    color: #ffb6e6;
+    text-shadow: 0 0 30px rgba(255,150,220,0.9), 0 0 80px rgba(0,255,220,0.06);
+    opacity:0; transform:scale(.92);
+    transition: opacity 900ms ease, transform 900ms cubic-bezier(.2,.9,.2,1);
+    z-index:13;
+  }
+  .finalMsg.show { opacity:1; transform:scale(1); }
+
+  /* couple small caption area left/right shadows for subtle detail */
+  .couple-shadow {
+    position:absolute; z-index:10; left:50%; bottom:10%;
+    transform:translateX(-50%); pointer-events:none;
+    filter: blur(22px); opacity:0.18;
+  }
+
+  /* responsive */
+  @media (max-width:520px) {
+    .login-card { width:340px; padding:20px; border-radius:14px; }
+    .poemLine { font-size:18px; }
+    .finalMsg { font-size:22px; }
+  }
 </style>
 </head>
 <body>
-<canvas id="bgCanvas"></canvas>
+  <canvas id="bgCanvas"></canvas>
 
-<div id="loginBox">
-  <h2>Ingresa la contraseña</h2>
-  <input type="password" id="pwd" placeholder="Contraseña">
-  <br>
-  <button id="btn">Entrar</button>
-</div>
+  <div class="login-card enter" id="loginCard" role="dialog" aria-label="Ingreso">
+    <div class="title">🌌 Bienvenida, Saori</div>
+    <div class="sub">Un rincón secreto — solo para nosotros</div>
 
-<div id="scene">
-  <div id="poem"></div>
-  <div id="couple">
-    <div class="person p1"><div class="head"></div></div>
-    <div class="person p2"><div class="head"></div></div>
+    <div class="field">
+      <input id="pw" class="neon-input" type="password" placeholder="Contraseña" autocomplete="off" aria-label="Contraseña" />
+    </div>
+
+    <button class="btn" id="enterBtn" aria-label="Entrar">Entrar</button>
+
+    <div class="hint">Tip: mueve el mouse o haz click en el fondo para crear trazos ✨</div>
+    <div class="error" id="errorMsg">Contraseña incorrecta. Intenta otra vez.</div>
   </div>
-</div>
+
+  <!-- Scene overlay -->
+  <div class="scene" id="scene" aria-hidden="true">
+    <canvas id="sceneCanvas"></canvas>
+    <div class="couple-shadow" id="coupleShadow"></div>
+    <div class="poemCenter" id="poemCenter" aria-live="polite" aria-atomic="true"></div>
+    <div class="finalMsg" id="finalMsg">Siempre tú y yo, mi amor 💖</div>
+  </div>
 
 <script>
-const pwd=document.getElementById('pwd');
-const btn=document.getElementById('btn');
-const loginBox=document.getElementById('loginBox');
-const scene=document.getElementById('scene');
-const poemBox=document.getElementById('poem');
-const poemText = `
-Feliz cuarto mes mi amor,
+/* =========================
+   BACKGROUND (login): particles, traces that follow mouse, click bursts
+   ========================= */
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let W = canvas.width = innerWidth;
+  let H = canvas.height = innerHeight;
+
+  function rnd(min,max){ return Math.random()*(max-min)+min; }
+
+  // drifting particles
+  const particles = [];
+  for(let i=0;i<140;i++){
+    particles.push({
+      x: rnd(0,W), y: rnd(0,H), r: rnd(0.6,2.6),
+      vx: rnd(-0.25,0.25), vy: rnd(-0.25,0.25),
+      h: rnd(180,320), life: 200 + Math.random()*400
+    });
+  }
+
+  // dynamic traces
+  const traces = [];
+
+  class Trace {
+    constructor(x,y,dx,dy,life){
+      this.x=x; this.y=y; this.dx=dx; this.dy=dy; this.life=life||100;
+      this.h = rnd(260,340);
+      this.w = rnd(0.6,1.6);
+    }
+    step(){
+      this.x += this.dx; this.y += this.dy;
+      // subtle curvature toward center
+      const cx = W/2, cy = H/2;
+      this.dx += (cx - this.x) * 0.0005;
+      this.dy += (cy - this.y) * 0.0005;
+      this.life--;
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(this.x - this.dx*3, this.y - this.dy*3);
+      ctx.strokeStyle = `hsla(${this.h},90%,62%,${Math.max(0,this.life/160)})`;
+      ctx.lineWidth = this.w;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+  }
+
+  // mouse handlers
+  let mouse = {x: W/2, y: H/2};
+  window.addEventListener('mousemove', (e)=>{
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    // spawn some traces gently
+    for(let i=0;i<2;i++) traces.push(new Trace(e.clientX + rnd(-5,5), e.clientY + rnd(-5,5), rnd(-1.4,1.4), rnd(-1.4,1.4), 120));
+  });
+
+  window.addEventListener('click', (e)=>{
+    const count = 28 + Math.floor(Math.random()*32);
+    for(let i=0;i<count;i++){
+      const a = Math.random()*Math.PI*2; const s = 2 + Math.random()*8;
+      traces.push(new Trace(e.clientX, e.clientY, Math.cos(a)*s, Math.sin(a)*s, 140 + Math.random()*60));
+    }
+    for(let i=0;i<12;i++){
+      particles.push({ x: e.clientX + rnd(-40,40), y: e.clientY + rnd(-40,40), r: rnd(0.6,2.6), vx: rnd(-0.6,0.6), vy: rnd(-0.6,0.6), h: rnd(180,320), life: 150 + Math.random()*300 });
+    }
+  });
+
+  function frame(){
+    // trailing overlay
+    ctx.fillStyle = 'rgba(3,3,12,0.22)';
+    ctx.fillRect(0,0,W,H);
+
+    // subtle aurora wash
+    const t = Date.now()*0.00012;
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, `hsla(${220 + Math.sin(t)*20}, 80%, 10%, 0.06)`);
+    g.addColorStop(0.5, `hsla(${280 + Math.cos(t*1.3)*30}, 80%, 12%, 0.06)`);
+    g.addColorStop(1, `rgba(0,0,0,0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+
+    // particles
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.vx += rnd(-0.02,0.02); p.vy += rnd(-0.02,0.02);
+      p.vx *= 0.995; p.vy *= 0.995;
+      if(p.x < -50) p.x = W+50;
+      if(p.x > W+50) p.x = -50;
+      if(p.y < -50) p.y = H+50;
+      if(p.y > H+50) p.y = -50;
+      p.life--;
+      // draw glow
+      const rad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*6);
+      rad.addColorStop(0, `hsla(${p.h}, 95%, 70%, 0.9)`);
+      rad.addColorStop(0.35, `hsla(${p.h}, 95%, 62%, 0.22)`);
+      rad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = rad;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2); ctx.fill();
+      if(p.life <= 0 || particles.length > 700) particles.splice(i,1);
+    }
+
+    // traces
+    for(let i=traces.length-1;i>=0;i--){
+      const tr = traces[i];
+      tr.step(); tr.draw();
+      if(tr.life <= 0) traces.splice(i,1);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener('resize', ()=>{ W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+  frame();
+})();
+
+/* =========================
+   SCENE: aurora layers, stars coming on, couple on canvas, poem control
+   ========================= */
+(function(){
+  const sceneEl = document.getElementById('scene');
+  const sceneCanvas = document.getElementById('sceneCanvas');
+  const sctx = sceneCanvas.getContext('2d');
+  const poemCenter = document.getElementById('poemCenter');
+  const finalMsg = document.getElementById('finalMsg');
+  const coupleShadow = document.getElementById('coupleShadow');
+
+  let W2 = sceneCanvas.width = innerWidth;
+  let H2 = sceneCanvas.height = innerHeight;
+
+  // STARS (appear progressively)
+  let stars = [];
+  function spawnStar(){
+    // spawn with low opacity, then brighten
+    stars.push({ x: Math.random()*W2, y: Math.random()*(H2*0.75), r: Math.random()*1.8+0.4, a:0.01, tw: 0.02+Math.random()*0.06, phase: Math.random()*Math.PI*2 });
+  }
+  // spawn stars gradually (up to 420)
+  const maxStars = 420;
+  let starSpawner = setInterval(()=> {
+    if(stars.length < maxStars) spawnStar();
+    else clearInterval(starSpawner);
+  }, 90);
+
+  // AURORA layers config
+  const auroraLayers = [];
+  function buildAurora(){
+    auroraLayers.length = 0;
+    const count = 4;
+    for(let i=0;i<count;i++){
+      auroraLayers.push({
+        amp: 40 + i*24,
+        freq: 0.0025 + i*0.0012,
+        speed: 0.0009 + i*0.0006,
+        hue: 170 + i*36,
+        offset: i*120
+      });
+    }
+  }
+  buildAurora();
+
+  // draw couple on canvas (two hugging figures, stylized)
+  function drawCouple(ctx, cx, cy, scale, t){
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // soft shadow ellipse below
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath();
+    ctx.ellipse(0, scale*0.95, scale*2.6, scale*0.9, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // left figure
+    ctx.fillStyle = 'rgba(8,8,12,0.98)';
+    ctx.beginPath();
+    ctx.moveTo(-scale*0.9, -scale*0.6);
+    ctx.bezierCurveTo(-scale*2.5, -scale*2.2, -scale*2.6, scale*0.6, -scale*0.4, scale*1.8);
+    ctx.bezierCurveTo(-scale*0.2, scale*2.0, 0, scale*2.05, scale*0.8, scale*1.7);
+    ctx.bezierCurveTo(scale*1.2, scale*1.4, scale*0.9, -scale*0.8, -scale*0.9, -scale*0.6);
+    ctx.fill();
+
+    // right figure (slightly forward)
+    ctx.beginPath();
+    ctx.moveTo(scale*0.9, -scale*0.6);
+    ctx.bezierCurveTo(scale*2.6, -scale*2.0, scale*3.0, scale*0.6, scale*0.6, scale*1.9);
+    ctx.bezierCurveTo(scale*0.2, scale*2.1, -scale*0.2, scale*2.05, -scale*0.8, scale*1.6);
+    ctx.bezierCurveTo(-scale*1.6, scale*1.2, -scale*1.0, -scale*0.9, scale*0.9, -scale*0.6);
+    ctx.fill();
+
+    // heads closish
+    ctx.fillStyle = 'rgba(6,6,10,0.98)';
+    ctx.beginPath(); ctx.ellipse(-scale*0.9, -scale*1.6, scale*0.7, scale*0.86, -0.15, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(scale*0.9, -scale*1.65, scale*0.68, scale*0.86, 0.15, 0, Math.PI*2); ctx.fill();
+
+    // tiny glow outline to hint colors
+    ctx.globalCompositeOperation = 'lighter';
+    const grad = ctx.createLinearGradient(-scale*2, -scale*3, scale*2, scale*3);
+    grad.addColorStop(0, 'rgba(255,140,200,0.02)');
+    grad.addColorStop(1, 'rgba(0,220,200,0.02)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.ellipse(0, -scale*0.6, scale*2.0, scale*2.5, 0, 0, Math.PI*2); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+
+    ctx.restore();
+  }
+
+  // animate scene canvas: stars, aurora, couple drawing
+  let t0 = Date.now();
+  function sceneLoop(){
+    sctx.clearRect(0,0,W2,H2);
+
+    // background vignette
+    const bg = sctx.createLinearGradient(0,0,0,H2);
+    bg.addColorStop(0, '#02102a');
+    bg.addColorStop(1, '#000');
+    sctx.fillStyle = bg;
+    sctx.fillRect(0,0,W2,H2);
+
+    // stars (gradual alpha increase + twinkle)
+    const now = Date.now();
+    for(const s of stars){
+      s.a = Math.min(1, (s.a || 0) + 0.006); // brightening in
+      const tw = Math.sin((now*0.002) + (s.x+s.y)*0.0005) * 0.4 + 0.6;
+      sctx.globalAlpha = s.a * tw;
+      sctx.fillStyle = 'white';
+      sctx.beginPath();
+      sctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      sctx.fill();
+    }
+    sctx.globalAlpha = 1;
+
+    // aurora layers: painted ribbons
+    const t = now - t0;
+    auroraLayers.forEach((L, idx)=>{
+      sctx.save();
+      sctx.globalCompositeOperation = 'lighter';
+      const grad = sctx.createLinearGradient(0, H2*0.15 + idx*10, 0, H2);
+      const hue = L.hue;
+      grad.addColorStop(0, `hsla(${hue},95%,62%,${0.08})`);
+      grad.addColorStop(0.5, `hsla(${hue+40},95%,62%,${0.06})`);
+      grad.addColorStop(1, `rgba(0,0,0,0)`);
+      sctx.fillStyle = grad;
+
+      sctx.beginPath();
+      const amplitude = L.amp + Math.sin(t * L.speed) * (L.amp * 0.45);
+      const freq = L.freq;
+      const offset = L.offset;
+      sctx.moveTo(-300, H2*0.18 + Math.sin(offset*0.02 + t*L.speed)*amplitude);
+      for(let x=-300; x<=W2+300; x+=12){
+        const y = H2*0.18 + Math.sin((x*freq) + t*L.speed + offset*0.006) * amplitude;
+        sctx.lineTo(x, y);
+      }
+      sctx.lineTo(W2+400, H2+400);
+      sctx.lineTo(-400, H2+400);
+      sctx.closePath();
+      sctx.fill();
+      sctx.restore();
+    });
+
+    // draw couple centered bottom
+    drawCouple(sctx, W2/2, H2*0.63, Math.min(W2,H2) * 0.11, t);
+
+    requestAnimationFrame(sceneLoop);
+  }
+
+  // resize
+  addEventListener('resize', ()=>{
+    W2 = sceneCanvas.width = innerWidth;
+    H2 = sceneCanvas.height = innerHeight;
+  });
+
+  sceneLoop();
+
+  // =========================
+  // POEM CONTROL: center, one-by-one typing effect, fade away
+  // =========================
+  const poemText = `Feliz cuarto mes mi amor,
 contigo aprendí lo que
 significa amar de verdad,
 lo que es tener hogar.
@@ -197,105 +526,159 @@ soñé tener contigo.
 Feliz aniversario amor mío,
 gracias por existir, gracias
 por elegirme y gracias
-por amarme tanto.
-`.trim().split("\n");
+por amarme tanto.`.split('\n');
 
-// login
-btn.addEventListener('click',()=>{
-  if(pwd.value==="3/10/25"){
-    loginBox.style.display="none";
-    scene.style.opacity="1";
-    revealPoem();
-  } else {
-    alert("Contraseña incorrecta");
+  function showSceneAndPoem(){
+    sceneEl.style.display = 'flex';
+    sceneEl.setAttribute('aria-hidden','false');
+    // soft in
+    sceneEl.animate([{opacity:0},{opacity:1}],{duration:900,fill:'forwards'});
+
+    // gradual star spawn already happening; ensure some visible immediately
+    for(let k=0;k<40;k++) spawnStar();
+
+    // reveal lines: each line typed slowly, stays, then fades out
+    let idx = 0;
+    function nextLine(){
+      if(idx >= poemText.length){
+        // poem ended -> show final message
+        setTimeout(()=> {
+          finalMsg.classList.add('show');
+        }, 900);
+        return;
+      }
+      const raw = poemText[idx].trim();
+      // center container: we show only one line DOM at a time
+      poemCenter.innerHTML = ''; // clear previous
+      if(raw.length === 0){
+        // empty line -> short pause
+        idx++;
+        setTimeout(nextLine, 700);
+        return;
+      }
+      const lineEl = document.createElement('div');
+      lineEl.className = 'poemLine poemLineTyped';
+      poemCenter.appendChild(lineEl);
+
+      // typing effect char by char
+      let i = 0;
+      const typingSpeed = 70; // ms per char -> slower for dramatic effect
+      function typeChar(){
+        if(i <= raw.length){
+          lineEl.textContent = raw.slice(0,i);
+          i++;
+          setTimeout(typeChar, typingSpeed + (Math.random()*20-10));
+        } else {
+          // typed complete: show with class and wait, then fade
+          lineEl.classList.add('show');
+          // duration visible before fade
+          const visibleDuration = 3000 + Math.min(2200, raw.length * 90);
+          setTimeout(()=>{
+            // fade out
+            lineEl.classList.remove('show');
+            lineEl.classList.add('hide');
+            // next line after fade completes
+            setTimeout(()=> { idx++; nextLine(); }, 950);
+          }, visibleDuration);
+        }
+      }
+      typeChar();
+    }
+
+    // small reveal timing offsets: show aurora and couple shortly
+    setTimeout(()=> {
+      // lighten a subtle shadow behind couple as a DOM element to add color depth
+      coupleShadow.style.width = '520px';
+      coupleShadow.style.height = '140px';
+      coupleShadow.style.background = 'radial-gradient(ellipse at center, rgba(255,150,220,0.09), rgba(0,220,200,0.04) 60%, transparent 80%)';
+      coupleShadow.style.left = '50%';
+      coupleShadow.style.transform = 'translateX(-50%)';
+      coupleShadow.style.pointerEvents = 'none';
+    }, 400);
+
+    setTimeout(()=> {
+      // aurora stronger (visual hint)
+      // actual aurora is drawn on canvas; we could also add a wash via DOM if needed
+    }, 900);
+
+    // start poem after brief lead-in
+    setTimeout(nextLine, 700);
   }
-});
 
-// Mostrar verso por verso (uno a la vez)
-function revealPoem(){
-  let index=0;
-  function showNext(){
-    if(index>=poemText.length) return;
-    const div=document.createElement('div');
-    div.className='line';
-    div.textContent=poemText[index];
-    poemBox.appendChild(div);
-    setTimeout(()=>div.classList.add('show'),50);
+  // expose function globally
+  window.launchRomanticScene = showSceneAndPoem;
 
-    // mantener visible 3.5s, luego desaparecer
-    setTimeout(()=>{
-      div.classList.remove('show');
-      div.classList.add('hide');
-    },3500);
+})();
 
-    index++;
-    setTimeout(showNext,4000); // siguiente línea
+/* =========================
+   LOGIN logic & wiring
+   ========================= */
+(function(){
+  const pwInput = document.getElementById('pw');
+  const btn = document.getElementById('enterBtn');
+  const err = document.getElementById('errorMsg');
+  const loginCard = document.getElementById('loginCard');
+
+  function showError(){
+    err.style.display = 'block';
+    err.animate([{opacity:0},{opacity:1}], {duration:250, fill:'forwards'});
+    setTimeout(()=> err.style.display = 'none', 2500);
   }
-  showNext();
-}
 
-/* Canvas animado con estrellas y aurora */
-const canvas=document.getElementById("bgCanvas");
-const ctx=canvas.getContext("2d");
-let W,H,stars=[];
-function resize(){
-  W=canvas.width=window.innerWidth;
-  H=canvas.height=window.innerHeight;
-}
-resize();
-window.onresize=resize;
-
-// crear estrellas poco a poco
-function addStar(){
-  if(stars.length<200){
-    stars.push({
-      x:Math.random()*W,
-      y:Math.random()*H,
-      r:Math.random()*2,
-      a:0
-    });
+  function doEnter() {
+    const val = pwInput.value.trim();
+    if(val === '3/10/25'){
+      // flourish exit
+      loginCard.animate([
+        { opacity: 1, transform: 'translate(-50%,-50%) scale(1)' },
+        { opacity: 0, transform: 'translate(-50%,-65%) scale(.96)' }
+      ], { duration: 450, easing: 'cubic-bezier(.2,.9,.2,1)', fill: 'forwards' });
+      setTimeout(()=> { loginCard.style.display = 'none'; }, 450);
+      // launch scene
+      setTimeout(()=> window.launchRomanticScene(), 430);
+    } else {
+      showError();
+      // little shake
+      loginCard.animate([
+        { transform: 'translate(-50%,-50%) rotate(0deg)' },
+        { transform: 'translate(-50%,-50%) rotate(-1.6deg)' },
+        { transform: 'translate(-50%,-50%) rotate(1.6deg)' },
+        { transform: 'translate(-50%,-50%) rotate(0deg)' }
+      ], { duration: 420, easing: 'ease-in-out' });
+    }
   }
-}
-setInterval(addStar,150);
 
-function drawAurora(time){
-  let grd=ctx.createLinearGradient(0,H*0.3,W,H*0.7);
-  grd.addColorStop(0,`rgba(0,255,200,0.08)`);
-  grd.addColorStop(0.5,`rgba(100,0,255,0.08)`);
-  grd.addColorStop(1,`rgba(0,200,255,0.08)`);
-  ctx.fillStyle=grd;
-  ctx.beginPath();
-  ctx.moveTo(0,H*0.6);
-  for(let x=0;x<=W;x+=40){
-    let y=H*0.6 + Math.sin((x/200)+(time/2000))*40;
-    ctx.lineTo(x,y);
-  }
-  ctx.lineTo(W,H);
-  ctx.lineTo(0,H);
-  ctx.closePath();
-  ctx.fill();
-}
-
-function animate(time){
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle="#000";
-  ctx.fillRect(0,0,W,H);
-  
-  // estrellas
-  stars.forEach(s=>{
-    s.a+=0.03;
-    ctx.beginPath();
-    ctx.arc(s.x,s.y,s.r,0,2*Math.PI);
-    ctx.fillStyle=`rgba(255,255,255,${0.5+Math.sin(s.a)*0.5})`;
-    ctx.fill();
+  btn.addEventListener('click', ()=> {
+    // ripple feedback
+    btnRipple(btn);
+    doEnter();
   });
-  
-  // aurora
-  drawAurora(time);
+  pwInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') doEnter(); });
 
-  requestAnimationFrame(animate);
-}
-animate();
+  // small ripple visual effect on button
+  function btnRipple(el){
+    const r = document.createElement('span');
+    r.style.position = 'absolute';
+    r.style.left = '50%'; r.style.top = '50%';
+    r.style.transform = 'translate(-50%,-50%)';
+    r.style.width = r.style.height = '8px';
+    r.style.borderRadius = '50%';
+    r.style.background = 'rgba(255,255,255,0.14)';
+    r.style.boxShadow = `0 0 30px rgba(255,150,220,0.25)`;
+    r.style.opacity = '0.9';
+    r.style.pointerEvents = 'none';
+    el.appendChild(r);
+    r.animate([
+      { transform: 'translate(-50%,-50%) scale(1)', opacity: 0.9 },
+      { transform: 'translate(-50%,-50%) scale(18)', opacity: 0 }
+    ], { duration: 700, easing: 'cubic-bezier(.2,.9,.2,1)'});
+    setTimeout(()=> { el.removeChild(r); }, 800);
+  }
+
+  // autofocus
+  setTimeout(()=> pwInput.focus(), 420);
+})();
+
 </script>
 </body>
 </html>
