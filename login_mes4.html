@@ -3,127 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login con Amor</title>
+  <title>Login Futurista - Mes 4 💖</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    body, html {
+      margin: 0;
+      padding: 0;
       overflow: hidden;
+      background: #0a0a0a;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      z-index: 0;
     }
 
     .login-container {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(15px);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(20, 20, 30, 0.8);
       padding: 40px;
       border-radius: 20px;
-      box-shadow: 0px 6px 20px rgba(0,0,0,0.3);
       text-align: center;
-      width: 320px;
-      color: white;
+      box-shadow: 0 0 40px rgba(255, 0, 150, 0.5);
+      z-index: 2;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .login-container h1 {
+      color: #fff;
       margin-bottom: 20px;
-      font-size: 2em;
-      text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
+      text-shadow: 0 0 10px #ff0099;
     }
 
     .input-group {
-      margin: 15px 0;
-      text-align: left;
-    }
-
-    .input-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 0.9em;
+      position: relative;
+      margin-bottom: 20px;
     }
 
     .input-group input {
-      width: 100%;
-      padding: 12px;
+      width: 250px;
+      padding: 15px;
       border: none;
-      border-radius: 10px;
       outline: none;
-      font-size: 1em;
+      border-radius: 10px;
+      font-size: 16px;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
     }
 
-    .btn {
+    .input-group input:focus {
+      box-shadow: 0 0 15px #ff0099, inset 0 0 15px rgba(255,255,255,0.2);
+    }
+
+    .login-btn {
       width: 100%;
-      padding: 12px;
-      margin-top: 15px;
+      padding: 15px;
       border: none;
-      border-radius: 25px;
-      background: white;
-      color: #e75480;
-      font-size: 1.1em;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #ff0099, #00ffff);
+      color: #fff;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       transition: 0.3s;
+      box-shadow: 0 0 15px rgba(255,0,150,0.6);
     }
 
-    .btn:hover {
-      background: #ffd6e0;
+    .login-btn:hover {
       transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(0,255,255,0.8);
     }
 
-    .corazon {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: red;
-      transform: rotate(45deg);
-      animation: flotar 6s infinite;
-    }
-    .corazon::before, .corazon::after {
-      content: "";
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: red;
-      border-radius: 50%;
-    }
-    .corazon::before { top: -10px; left: 0; }
-    .corazon::after { left: -10px; top: 0; }
-
-    @keyframes flotar {
-      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
-      100% { transform: translateY(-600px) rotate(45deg); opacity: 0; }
+    .mensaje {
+      margin-top: 15px;
+      color: #ff66cc;
+      font-size: 14px;
+      display: none;
     }
   </style>
 </head>
 <body>
+  <canvas id="canvas"></canvas>
+
   <div class="login-container">
-    <h1>💖 Bienvenida Saori 💖</h1>
-    <form>
+    <h1>🌹 Mes 4, Saori 🌹</h1>
+    <form id="loginForm">
       <div class="input-group">
-        <label for="usuario">Usuario</label>
-        <input type="text" id="usuario" placeholder="Tu nombre">
+        <input type="password" id="password" placeholder="Ingresa la contraseña 💖" required>
       </div>
-      <div class="input-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" placeholder="Tu contraseña">
-      </div>
-      <button type="submit" class="btn">Entrar</button>
+      <button type="submit" class="login-btn">Entrar</button>
+      <p class="mensaje" id="mensaje">Contraseña incorrecta 😢</p>
     </form>
   </div>
 
   <script>
-    function crearCorazon() {
-      const corazon = document.createElement("div");
-      corazon.className = "corazon";
-      corazon.style.left = Math.random() * window.innerWidth + "px";
-      corazon.style.top = window.innerHeight + "px";
-      document.body.appendChild(corazon);
-      setTimeout(() => corazon.remove(), 6000);
+    // ---- ANIMACIÓN DE LÍNEAS ----
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    let lines = [];
+    let mouse = { x: width / 2, y: height / 2 };
+
+    class Line {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.dx = (Math.random() - 0.5) * 3;
+        this.dy = (Math.random() - 0.5) * 3;
+        this.life = 100 + Math.random() * 50;
+      }
+      update() {
+        this.x += this.dx;
+        this.y += this.dy;
+        this.life--;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `hsla(${Math.random() * 360}, 100%, 70%, 0.6)`;
+        ctx.stroke();
+      }
     }
-    setInterval(crearCorazon, 400);
+
+    function animate() {
+      ctx.fillStyle = "rgba(10,10,10,0.2)";
+      ctx.fillRect(0, 0, width, height);
+
+      lines.forEach((line, i) => {
+        line.update();
+        line.draw();
+        if (line.life <= 0) lines.splice(i, 1);
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    canvas.addEventListener("mousemove", e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      for (let i = 0; i < 2; i++) {
+        lines.push(new Line(mouse.x, mouse.y));
+      }
+    });
+
+    canvas.addEventListener("click", e => {
+      for (let i = 0; i < 30; i++) {
+        lines.push(new Line(e.clientX, e.clientY));
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    });
+
+    animate();
+
+    // ---- VALIDACIÓN DEL LOGIN ----
+    const form = document.getElementById("loginForm");
+    const mensaje = document.getElementById("mensaje");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const password = document.getElementById("password").value;
+      if (password === "saori4") { // 🔑 Aquí cambias la contraseña
+        alert("💖 Bienvenida Saori, feliz Mes 4 💖");
+      } else {
+        mensaje.style.display = "block";
+      }
+    });
   </script>
 </body>
 </html>
