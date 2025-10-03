@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mes 4</title>
+  <title>Login Futurista - Mes 4 💖</title>
   <style>
     body, html {
       margin: 0;
@@ -44,7 +44,6 @@
     }
 
     .input-group {
-      position: relative;
       margin-bottom: 20px;
     }
 
@@ -57,7 +56,6 @@
       font-size: 16px;
       background: rgba(255,255,255,0.05);
       color: #fff;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
       transition: all 0.3s ease;
     }
 
@@ -90,20 +88,156 @@
       font-size: 14px;
       display: none;
     }
+
+    /* --- Pantalla romántica después del login --- */
+    .romantico {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      background: radial-gradient(ellipse at bottom, #0d1a26 0%, #000 100%);
+      overflow: hidden;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .romantico h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px #ff99cc;
+    }
+
+    .romantico p {
+      font-size: 18px;
+      line-height: 1.7;
+      white-space: pre-line;
+      max-width: 800px;
+      margin: auto;
+      text-shadow: 0 0 8px #ffb6ff;
+    }
+
+    .pareja {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 200px;
+      background: url('https://i.ibb.co/MVjq7Lc/couple-silhouette.png') no-repeat center/contain;
+      filter: drop-shadow(0 0 10px #ff66cc);
+    }
+
+    /* Aurora */
+    .aurora {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(0,255,255,0.3), rgba(255,0,200,0.2), rgba(0,200,255,0.3));
+      mix-blend-mode: screen;
+      animation: aurora 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes aurora {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-100px) scale(1.2); }
+    }
+
+    /* Estrellas */
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: twinkle 2s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.2; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
 
-  <div class="login-container">
-    <h1>Mes 4</h1>
+  <div class="login-container" id="loginBox">
+    <h1>🌹 Mes 4, Saori 🌹</h1>
     <form id="loginForm">
       <div class="input-group">
-        <input type="password" id="password" placeholder="Ingresa la contraseña" required>
+        <input type="password" id="password" placeholder="Ingresa la contraseña 💖" required>
       </div>
       <button type="submit" class="login-btn">Entrar</button>
-      <p class="mensaje" id="mensaje">Contraseña incorrecta</p>
+      <p class="mensaje" id="mensaje">Contraseña incorrecta 😢</p>
     </form>
+  </div>
+
+  <!-- Pantalla romántica -->
+  <div class="romantico" id="romantico">
+    <div class="aurora"></div>
+    <div class="pareja"></div>
+    <h2>Feliz cuarto mes mi amor 💖</h2>
+    <p>
+Feliz cuarto mes mi amor,
+contigo aprendí lo que
+significa amar de verdad,
+lo que es tener hogar.
+
+Cada día contigo es
+un regalo increíble que
+atesoro en mi corazón,
+porque tú eres especial.
+
+Cuatro meses contigo parecen
+un sueño hermoso cumplido,
+un viaje lleno de
+sonrisas, abrazos y amor.
+
+Me haces sentir afortunado,
+me haces sentir amado,
+y me haces sentir
+que soy suficiente contigo.
+
+Gracias por tu ternura,
+por tu paciencia conmigo,
+por tu forma única
+de hacerme feliz siempre.
+
+Contigo quiero todo amor,
+mis días y mis
+noches, mis risas y
+lágrimas, mis sueños completos.
+
+Eres mi motivación diaria,
+mi alegría constante, mi
+abrazo favorito en el
+mundo y mi destino.
+
+Cuatro meses son solo
+el inicio de algo
+maravilloso que sigue creciendo,
+porque contigo todo fluye.
+
+Te prometo seguir cuidándote,
+seguir eligiéndote cada día,
+y amarte con todo
+lo que soy siempre.
+
+Eres mi sol brillante,
+mi refugio seguro, mi
+todo lo que siempre
+soñé tener contigo.
+
+Feliz aniversario amor mío,
+gracias por existir, gracias
+por elegirme y gracias
+por amarme tanto.
+    </p>
   </div>
 
   <script>
@@ -179,16 +313,33 @@
     // ---- VALIDACIÓN DEL LOGIN ----
     const form = document.getElementById("loginForm");
     const mensaje = document.getElementById("mensaje");
+    const loginBox = document.getElementById("loginBox");
+    const romantico = document.getElementById("romantico");
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const password = document.getElementById("password").value;
-      if (password === "saori4") { //  Aquí cambias la contraseña
-        alert("💖 Bienvenida Saori, feliz Mes 4");
+      if (password === "3/10/25") { 
+        loginBox.style.display = "none";
+        romantico.style.display = "block";
+        generarEstrellas();
       } else {
         mensaje.style.display = "block";
       }
     });
+
+    // Generar estrellas
+    function generarEstrellas() {
+      for (let i = 0; i < 200; i++) {
+        const star = document.createElement("div");
+        star.classList.add("star");
+        star.style.width = star.style.height = Math.random() * 3 + "px";
+        star.style.top = Math.random() * window.innerHeight + "px";
+        star.style.left = Math.random() * window.innerWidth + "px";
+        star.style.animationDuration = (Math.random() * 2 + 1) + "s";
+        romantico.appendChild(star);
+      }
+    }
   </script>
 </body>
 </html>
