@@ -22,12 +22,10 @@
     color:#eaf6ff;
   }
 
-  /* Canvas full screen (particles, lines, aurora base) */
   canvas#bgCanvas{
     position:fixed; left:0; top:0; width:100%; height:100%; z-index:0;
   }
 
-  /* Centered login card */
   .login-card{
     position:fixed;
     z-index:3;
@@ -49,24 +47,16 @@
   .title{
     font-weight:700;
     font-size:22px;
-    letter-spacing:0.2px;
     margin-bottom:8px;
     background: linear-gradient(90deg,var(--accent1),var(--accent2));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 12px rgba(255,102,196,0.25);
   }
 
   .sub{
     font-size:12px;
     color:rgba(230,240,255,0.75);
     margin-bottom:18px;
-  }
-
-  .field{
-    position:relative;
-    margin:14px auto;
-    width:100%;
   }
 
   input[type="password"]{
@@ -78,27 +68,13 @@
     color:#eaf6ff;
     font-size:15px;
     outline:none;
-    transition: box-shadow .28s ease, transform .18s ease;
-    box-shadow:
-      inset 0 0 18px rgba(255,255,255,0.02),
-      0 0 0 2px rgba(255,255,255,0.0);
     text-align:center;
-  }
-
-  input[type="password"]::placeholder{ color: rgba(230,240,255,0.45); text-align:center; }
-
-  input[type="password"]:focus{
-    box-shadow:
-      0 6px 28px rgba(0,255,238,0.06),
-      0 0 30px rgba(255,102,196,0.07),
-      inset 0 0 18px rgba(255,255,255,0.03);
-    transform: translateY(-2px);
   }
 
   .btn{
     width:100%;
     padding:12px;
-    margin-top:6px;
+    margin-top:12px;
     border-radius:10px;
     border:none;
     cursor:pointer;
@@ -106,17 +82,6 @@
     letter-spacing:0.6px;
     background: linear-gradient(90deg,var(--accent1), var(--accent2));
     color:#041017;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 20px rgba(255,102,196,0.18);
-    transition: transform .16s ease, box-shadow .16s;
-  }
-
-  .btn:active{ transform:scale(.995); }
-  .btn:hover{ box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0,255,238,0.12); }
-
-  .hint{
-    font-size:12px;
-    margin-top:12px;
-    color: rgba(230,240,255,0.6);
   }
 
   .error{
@@ -126,7 +91,6 @@
     display:none;
   }
 
-  /* Overlay scene */
   .scene{
     position:fixed;
     z-index:6;
@@ -136,182 +100,107 @@
     align-items:center;
     justify-content:center;
     flex-direction:column;
-    pointer-events:auto;
   }
 
-  .scene .canvasScene{
+  .scene canvas{
     position:absolute; left:0; top:0; width:100%; height:100%; z-index:5;
   }
 
-  /* poem container */
   .poemWrap{
     z-index:7;
     position:relative;
-    max-width:980px;
-    width:92%;
+    max-width:900px;
     margin:0 auto;
-    padding: 30px;
-    pointer-events:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+    text-align:center;
+    padding:20px;
   }
 
   .line{
     font-size:20px;
-    color:rgba(255,255,255,0.92);
-    margin:6px 0;
-    line-height:1.35;
+    color:white;
     opacity:0;
-    transform: translateY(22px) scale(0.98);
-    will-change: transform,opacity;
-    text-align:center;
-    text-shadow: 0 0 10px rgba(255,180,220,0.06);
+    margin:12px 0;
+    transition: opacity 1s ease;
+    text-shadow:0 0 10px rgba(255,255,255,0.4);
   }
 
-  /* floating motion for each shown line */
-  .float {
-    animation: floatMove 8s ease-in-out infinite;
-  }
-  @keyframes floatMove{
-    0%{ transform: translateY(0px) translateX(0px); }
-    50%{ transform: translateY(-10px) translateX(5px); }
-    100%{ transform: translateY(0px) translateX(0px); }
-  }
-
-  /* subtle top-left info */
-  .meta{
-    position:fixed; left:18px; top:18px; z-index:4;
-    color: rgba(230,240,255,0.6); font-size:13px;
-    backdrop-filter: blur(4px);
+  .couple {
+    position:absolute;
+    bottom:40px;
+    width:120px;
+    height:180px;
+    background:linear-gradient(to top, rgba(255,255,255,0.9), transparent);
+    border-radius:60px 60px 20px 20px;
+    left:50%;
+    transform:translateX(-50%);
+    opacity:0;
+    transition:opacity 2s ease;
   }
 
-  @media (max-width:420px){
-    .login-card{ width:320px; padding:20px; }
-    .line{ font-size:16px; }
+  .aurora {
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: radial-gradient(circle at 50% 80%, rgba(0,255,200,0.4), transparent 60%),
+                radial-gradient(circle at 60% 70%, rgba(255,0,255,0.3), transparent 60%),
+                radial-gradient(circle at 40% 65%, rgba(0,150,255,0.3), transparent 60%);
+    animation: auroraAnim 12s ease-in-out infinite alternate;
+    opacity:0;
+  }
+
+  @keyframes auroraAnim {
+    0%{transform:translateY(0);}
+    100%{transform:translateY(-20px);}
   }
 </style>
 </head>
 <body>
-  <div class="meta">Mes 4 • Ingresa la contraseña</div>
-
   <canvas id="bgCanvas"></canvas>
 
-  <div class="login-card" id="loginCard" aria-hidden="false">
+  <div class="login-card" id="loginCard">
     <div class="title">🌌 Bienvenida, Saori</div>
     <div class="sub">Un rincón secreto — solo para nosotros</div>
-
-    <div class="field">
-      <input id="pw" type="password" placeholder="Contraseña" autocomplete="off" />
-    </div>
+    <input id="pw" type="password" placeholder="Contraseña"/>
     <button class="btn" id="enterBtn">Entrar</button>
-
-    <div class="hint">Tip: haz click en el fondo para crear un estallido de trazos ✨</div>
-    <div class="error" id="errorMsg">Contraseña incorrecta. Intenta otra vez.</div>
+    <div class="error" id="errorMsg">Contraseña incorrecta</div>
   </div>
 
-  <!-- Scene overlay -->
   <div class="scene" id="scene">
-    <canvas class="canvasScene" id="sceneCanvas"></canvas>
-    <div class="poemWrap" id="poemWrap" aria-hidden="true"></div>
+    <canvas id="sceneCanvas"></canvas>
+    <div class="aurora" id="aurora"></div>
+    <div class="couple" id="couple"></div>
+    <div class="poemWrap" id="poemWrap"></div>
   </div>
 
 <script>
-/* =========================
-   Background: particles + lines
-   ========================= */
+/* Fondo partículas login */
 (function(){
-  const canvas = document.getElementById('bgCanvas');
-  const ctx = canvas.getContext('2d');
-  let W = canvas.width = innerWidth;
-  let H = canvas.height = innerHeight;
-
-  const particles = [];
-  const maxP = 140;
-  function rnd(min,max){ return Math.random()*(max-min)+min; }
-
-  class Particle{
-    constructor(x,y){
-      this.x = x!==undefined?x: rnd(0,W);
-      this.y = y!==undefined?y: rnd(0,H);
-      this.r = rnd(0.6,2.6);
-      this.vx = rnd(-0.25,0.25);
-      this.vy = rnd(-0.25,0.25);
-      this.h = rnd(180,320);
-      this.life = 200 + Math.random()*400;
-    }
-    step(){
-      this.x += this.vx; this.y += this.vy;
-      this.vx *= 0.995; this.vy *= 0.995;
-      if(this.x < 0) this.x = W;
-      if(this.x > W) this.x = 0;
-      if(this.y < 0) this.y = H;
-      if(this.y > H) this.y = 0;
-      this.life--;
-    }
-    draw(){
-      ctx.beginPath();
-      const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r*6);
-      g.addColorStop(0, `hsla(${this.h}, 100%, 75%, 0.9)`);
-      g.addColorStop(0.4, `hsla(${this.h}, 100%, 65%, 0.22)`);
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g;
-      ctx.arc(this.x, this.y, this.r*3, 0, Math.PI*2);
-      ctx.fill();
-    }
+  const c=document.getElementById("bgCanvas"),ctx=c.getContext("2d");
+  let W=c.width=innerWidth,H=c.height=innerHeight;
+  const stars=[];
+  for(let i=0;i<150;i++){stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2});}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle="white";
+    stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
+    requestAnimationFrame(draw);
   }
-
-  const traces = [];
-  class Trace {
-    constructor(x,y,dx,dy,life){
-      this.x=x; this.y=y; this.dx=dx; this.dy=dy; this.life = life||100;
-      this.h = rnd(280, 340);
-      this.w = rnd(0.6,1.6);
-    }
-    step(){ this.x+=this.dx; this.y+=this.dy; this.life--; }
-    draw(){
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(this.x - this.dx*3, this.y - this.dy*3);
-      ctx.strokeStyle = `hsla(${this.h},95%,62%,${Math.max(0,this.life/140)})`;
-      ctx.lineWidth = this.w;
-      ctx.stroke();
-    }
-  }
-
-  for(let i=0;i<maxP;i++) particles.push(new Particle());
-  window.addEventListener('mousemove', e=>{
-    for(let i=0;i<2;i++)
-      traces.push(new Trace(e.clientX, e.clientY, rnd(-1.2,1.2), rnd(-1.2,1.2), 120));
-  });
-  window.addEventListener('click', e=>{
-    const count = 24+Math.random()*28;
-    for(let i=0;i<count;i++){
-      const a = Math.random()*Math.PI*2;
-      const s = 2+Math.random()*6;
-      traces.push(new Trace(e.clientX, e.clientY, Math.cos(a)*s, Math.sin(a)*s, 160));
-    }
-  });
-
-  function frame(){
-    ctx.fillStyle = 'rgba(3,3,12,0.22)';
-    ctx.fillRect(0,0,W,H);
-    for(let i=particles.length-1;i>=0;i--){particles[i].step();particles[i].draw();}
-    for(let i=traces.length-1;i>=0;i--){traces[i].step();traces[i].draw(); if(traces[i].life<=0)traces.splice(i,1);}
-    requestAnimationFrame(frame);
-  }
-  addEventListener('resize', ()=>{W=canvas.width=innerWidth;H=canvas.height=innerHeight;});
-  frame();
+  draw();
+  addEventListener("resize",()=>{W=c.width=innerWidth;H=c.height=innerHeight;});
 })();
 
-/* =========================
-   Poem slow reveal
-   ========================= */
-(function(){
-  const scene = document.getElementById('scene');
-  const poemWrap = document.getElementById('poemWrap');
+/* Escena romántica */
+function showRomanticScene(){
+  const scene=document.getElementById("scene");
+  const aurora=document.getElementById("aurora");
+  const couple=document.getElementById("couple");
+  const wrap=document.getElementById("poemWrap");
+  scene.style.display="flex";
 
-  const poemText = `Feliz cuarto mes mi amor,
+  setTimeout(()=>aurora.style.opacity=1,1000);
+  setTimeout(()=>couple.style.opacity=1,2500);
+
+  const poem=`Feliz cuarto mes mi amor,
 contigo aprendí lo que
 significa amar de verdad,
 lo que es tener hogar.
@@ -319,54 +208,86 @@ lo que es tener hogar.
 Cada día contigo es
 un regalo increíble que
 atesoro en mi corazón,
-porque tú eres especial.`.split('\n');
+porque tú eres especial.
 
-  function revealPoem(){
-    poemWrap.innerHTML='';
-    poemText.forEach((ln, idx)=>{
-      const div=document.createElement('div');
-      div.className='line';
-      div.textContent=ln.trim();
-      poemWrap.appendChild(div);
-      setTimeout(()=>{
-        div.style.transition='opacity 1200ms ease, transform 1200ms ease';
-        div.style.opacity='1';
-        div.style.transform='translateY(0) scale(1)';
-        div.classList.add('float');
-      }, idx*1800); // más lento
-    });
+Cuatro meses contigo parecen
+un sueño hermoso cumplido,
+un viaje lleno de
+sonrisas, abrazos y amor.
+
+Me haces sentir afortunado,
+me haces sentir amado,
+y me haces sentir
+que soy suficiente contigo.
+
+Gracias por tu ternura,
+por tu paciencia conmigo,
+por tu forma única
+de hacerme feliz siempre.
+
+Contigo quiero todo amor,
+mis días y mis
+noches, mis risas y
+lágrimas, mis sueños completos.
+
+Eres mi motivación diaria,
+mi alegría constante, mi
+abrazo favorito en el
+mundo y mi destino.
+
+Cuatro meses son solo
+el inicio de algo
+maravilloso que sigue creciendo,
+porque contigo todo fluye.
+
+Te prometo seguir cuidándote,
+seguir eligiéndote cada día,
+y amarte con todo
+lo que soy siempre.
+
+Eres mi sol brillante,
+mi refugio seguro, mi
+todo lo que siempre
+soñé tener contigo.
+
+Feliz aniversario amor mío,
+gracias por existir, gracias
+por elegirme y gracias
+por amarme tanto.`.split("\n");
+
+  let i=0;
+  function showLine(){
+    if(i>=poem.length) return;
+    const line=document.createElement("div");
+    line.className="line";
+    line.textContent=poem[i];
+    wrap.appendChild(line);
+    setTimeout(()=>line.style.opacity=1,100);
+    setTimeout(()=>line.style.opacity=0,4000); // desaparece después
+    i++;
+    setTimeout(showLine,4500);
   }
+  showLine();
+}
 
-  window.showRomanticScene=function(){
-    scene.style.display='flex';
-    setTimeout(()=> revealPoem(), 1000);
-  };
-})();
-
-/* =========================
-   Login logic
-   ========================= */
+/* Login */
 (function(){
-  const pwInput=document.getElementById('pw');
-  const btn=document.getElementById('enterBtn');
-  const error=document.getElementById('errorMsg');
-  const loginCard=document.getElementById('loginCard');
+  const pw=document.getElementById("pw");
+  const btn=document.getElementById("enterBtn");
+  const err=document.getElementById("errorMsg");
+  const login=document.getElementById("loginCard");
 
-  function showError(){
-    error.style.display='block';
-    setTimeout(()=> error.style.display='none', 2400);
+  function submit(){
+    if(pw.value==="3/10/25"){
+      login.style.display="none";
+      showRomanticScene();
+    } else {
+      err.style.display="block";
+      setTimeout(()=>err.style.display="none",2000);
+    }
   }
-
-  function onSubmit(){
-    if(pwInput.value.trim()==='3/10/25'){
-      loginCard.style.display='none';
-      window.showRomanticScene();
-    } else { showError(); }
-  }
-
-  btn.addEventListener('click',onSubmit);
-  pwInput.addEventListener('keydown',e=>{if(e.key==='Enter')onSubmit();});
-  setTimeout(()=>pwInput.focus(),500);
+  btn.addEventListener("click",submit);
+  pw.addEventListener("keydown",e=>{if(e.key==="Enter")submit();});
 })();
 </script>
 </body>
