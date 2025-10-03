@@ -3,187 +3,181 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mes 4</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #0a0a0a;
-      height: 100%;
+  <title>mes 4</title>
+  <style>e
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
       font-family: 'Segoe UI', sans-serif;
-    }
-
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: block;
-      z-index: 0;
-    }
-
-    .login-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(20, 20, 30, 0.8);
-      padding: 40px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(255, 0, 150, 0.5);
-      z-index: 2;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .login-container h1 {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top, #0a0a2a, #000);
+      overflow: hidden;
       color: #fff;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #ff0099;
     }
 
-    .input-group {
-      margin-bottom: 20px;
-    }
-
-    .input-group input {
-      width: 250px;
-      padding: 15px;
-      border: none;
-      outline: none;
-      border-radius: 10px;
-      font-size: 16px;
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      transition: all 0.3s ease;
-    }
-
-    .input-group input:focus {
-      box-shadow: 0 0 15px #ff0099, inset 0 0 15px rgba(255,255,255,0.2);
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #ff0099, #00ffff);
-      color: #fff;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 0 15px rgba(255,0,150,0.6);
-    }
-
-    .login-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(0,255,255,0.8);
-    }
-
-    .mensaje {
-      margin-top: 15px;
-      color: #ff66cc;
-      font-size: 14px;
-      display: none;
-    }
-
-    /* --- Pantalla romántica después del login --- */
-    .romantico {
-      display: none;
+    /* Fondo de estrellas */
+    .stars {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      z-index: 5;
-      background: radial-gradient(ellipse at bottom, #0d1a26 0%, #000 100%);
-      overflow: hidden;
-      color: white;
-      text-align: center;
-      padding: 40px;
+      background: transparent;
+      z-index: -2;
     }
 
-    .romantico h2 {
-      font-size: 28px;
-      margin-bottom: 20px;
-      text-shadow: 0 0 15px #ff99cc;
-    }
-
-    .romantico p {
-      font-size: 18px;
-      line-height: 1.7;
-      white-space: pre-line;
-      max-width: 800px;
-      margin: auto;
-      text-shadow: 0 0 8px #ffb6ff;
-    }
-
-    .pareja {
+    .star {
       position: absolute;
-      bottom: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 200px;
-      background: url('https://i.ibb.co/MVjq7Lc/couple-silhouette.png') no-repeat center/contain;
-      filter: drop-shadow(0 0 10px #ff66cc);
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite alternate;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
     }
 
     /* Aurora */
     .aurora {
       position: absolute;
-      top: 0;
-      left: 0;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, #00f0ff44, #ff00ff44, #00ff8844, #00f0ff44);
+      filter: blur(120px);
+      animation: auroraMove 15s infinite linear;
+      z-index: -1;
+    }
+
+    @keyframes auroraMove {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Caja login */
+    .login-box {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255,255,255,0.2);
+      backdrop-filter: blur(15px);
+      text-align: center;
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 10px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #ff66cc;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ff3399;
+    }
+
+    /* Escena romántica */
+    .scene {
+      display: none;
+      position: absolute;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(120deg, rgba(0,255,255,0.3), rgba(255,0,200,0.2), rgba(0,200,255,0.3));
-      mix-blend-mode: screen;
-      animation: aurora 10s ease-in-out infinite alternate;
+      background: linear-gradient(to top, #000, #0a0a2a 70%);
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
-    @keyframes aurora {
-      0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-100px) scale(1.2); }
+    .couple {
+      width: 250px;
+      height: 250px;
+      background: url('https://i.imgur.com/nf8YF3Y.png') no-repeat center/contain; /* Silueta pareja */
+      margin-bottom: 20px;
+      animation: float 4s ease-in-out infinite;
     }
 
-    /* Estrellas */
-    .star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      opacity: 0.8;
-      animation: twinkle 2s infinite alternate;
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
     }
 
-    @keyframes twinkle {
-      from { opacity: 0.2; }
-      to { opacity: 1; }
+    .love-text {
+      max-width: 80%;
+      font-size: 20px;
+      line-height: 1.8em;
+      text-align: center;
+      white-space: pre-line;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: showText 1s forwards;
+    }
+
+    @keyframes showText {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
+  <div class="stars"></div>
+  <div class="aurora"></div>
 
-  <div class="login-container" id="loginBox">
-    <h1>Mes 4</h1>
-    <form id="loginForm">
-      <div class="input-group">
-        <input type="password" id="password" placeholder="Ingresa la contraseña" required>
-      </div>
-      <button type="submit" class="login-btn">Entrar</button>
-      <p class="mensaje" id="mensaje">Contraseña incorrecta </p>
-    </form>
+  <div class="login-box">
+    <h2>Ingresa la contraseña</h2>
+    <input type="password" id="password" placeholder="Contraseña">
+    <br>
+    <button onclick="checkPassword()">Entrar</button>
   </div>
 
-  <!-- Pantalla romántica -->
-  <div class="romantico" id="romantico">
-    <div class="aurora"></div>
-    <div class="pareja"></div>
-    <h2>Feliz cuarto mes mi amor</h2>
-    <p>
-Feliz cuarto mes mi amor,
+  <div class="scene" id="scene">
+    <div class="couple"></div>
+    <div id="poem"></div>
+  </div>
+
+  <script>
+    // Generar estrellas aleatorias
+    const stars = document.querySelector('.stars');
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.animationDuration = (2 + Math.random()*3) + 's';
+      stars.appendChild(star);
+    }
+
+    function checkPassword() {
+      const pass = document.getElementById('password').value;
+      if (pass === "3/10/25") {
+        document.querySelector('.login-box').style.display = 'none';
+        document.getElementById('scene').style.display = 'flex';
+        showPoem();
+      } else {
+        alert("Contraseña incorrecta");
+      }
+    }
+
+    // Texto romántico línea por línea
+    const text = `Feliz cuarto mes mi amor,
 contigo aprendí lo que
 significa amar de verdad,
 lo que es tener hogar.
@@ -236,109 +230,19 @@ soñé tener contigo.
 Feliz aniversario amor mío,
 gracias por existir, gracias
 por elegirme y gracias
-por amarme tanto.
-    </p>
-  </div>
+por amarme tanto.`.split("\n");
 
-  <script>
-    // ---- ANIMACIÓN DE LÍNEAS ----
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-    let lines = [];
-    let mouse = { x: width / 2, y: height / 2 };
-
-    class Line {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.dx = (Math.random() - 0.5) * 3;
-        this.dy = (Math.random() - 0.5) * 3;
-        this.life = 100 + Math.random() * 50;
-      }
-      update() {
-        this.x += this.dx;
-        this.y += this.dy;
-        this.life--;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = `hsla(${Math.random() * 360}, 100%, 70%, 0.6)`;
-        ctx.stroke();
-      }
-    }
-
-    function animate() {
-      ctx.fillStyle = "rgba(10,10,10,0.2)";
-      ctx.fillRect(0, 0, width, height);
-
-      lines.forEach((line, i) => {
-        line.update();
-        line.draw();
-        if (line.life <= 0) lines.splice(i, 1);
+    function showPoem() {
+      const poemDiv = document.getElementById("poem");
+      let delay = 0;
+      text.forEach(line => {
+        const p = document.createElement("div");
+        p.classList.add("love-text");
+        p.style.animationDelay = delay + "s";
+        p.textContent = line;
+        poemDiv.appendChild(p);
+        delay += 2; // cada línea aparece después de 2s
       });
-
-      requestAnimationFrame(animate);
-    }
-
-    canvas.addEventListener("mousemove", e => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      for (let i = 0; i < 2; i++) {
-        lines.push(new Line(mouse.x, mouse.y));
-      }
-    });
-
-    canvas.addEventListener("click", e => {
-      for (let i = 0; i < 30; i++) {
-        lines.push(new Line(e.clientX, e.clientY));
-      }
-    });
-
-    window.addEventListener("resize", () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-    });
-
-    animate();
-
-    // ---- VALIDACIÓN DEL LOGIN ----
-    const form = document.getElementById("loginForm");
-    const mensaje = document.getElementById("mensaje");
-    const loginBox = document.getElementById("loginBox");
-    const romantico = document.getElementById("romantico");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const password = document.getElementById("password").value;
-      if (password === "3/10/25") { 
-        loginBox.style.display = "none";
-        romantico.style.display = "block";
-        generarEstrellas();
-      } else {
-        mensaje.style.display = "block";
-      }
-    });
-
-    // Generar estrellas
-    function generarEstrellas() {
-      for (let i = 0; i < 200; i++) {
-        const star = document.createElement("div");
-        star.classList.add("star");
-        star.style.width = star.style.height = Math.random() * 3 + "px";
-        star.style.top = Math.random() * window.innerHeight + "px";
-        star.style.left = Math.random() * window.innerWidth + "px";
-        star.style.animationDuration = (Math.random() * 2 + 1) + "s";
-        romantico.appendChild(star);
-      }
     }
   </script>
 </body>
