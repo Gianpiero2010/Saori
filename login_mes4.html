@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Futurista - Mes 4 💖</title>
+  <title>Mes 4</title>
   <style>
     body, html {
       margin: 0;
@@ -96,13 +96,13 @@
   <canvas id="canvas"></canvas>
 
   <div class="login-container">
-    <h1>🌹 Mes 4, Saori 🌹</h1>
+    <h1>Mes 4</h1>
     <form id="loginForm">
       <div class="input-group">
-        <input type="password" id="password" placeholder="Ingresa la contraseña 💖" required>
+        <input type="password" id="password" placeholder="Ingresa la contraseña" required>
       </div>
       <button type="submit" class="login-btn">Entrar</button>
-      <p class="mensaje" id="mensaje">Contraseña incorrecta 😢</p>
+      <p class="mensaje" id="mensaje">Contraseña incorrecta</p>
     </form>
   </div>
 
@@ -183,8 +183,8 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const password = document.getElementById("password").value;
-      if (password === "saori4") { // 🔑 Aquí cambias la contraseña
-        alert("💖 Bienvenida Saori, feliz Mes 4 💖");
+      if (password === "saori4") { //  Aquí cambias la contraseña
+        alert("💖 Bienvenida Saori, feliz Mes 4");
       } else {
         mensaje.style.display = "block";
       }
