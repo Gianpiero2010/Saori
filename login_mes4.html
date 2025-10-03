@@ -51,8 +51,10 @@
     font-size:22px;
     letter-spacing:0.2px;
     margin-bottom:8px;
-    color:linear-gradient(90deg,var(--accent1),var(--accent2));
-    text-shadow: 0 0 12px rgba(255,102,196,0.15);
+    background: linear-gradient(90deg,var(--accent1),var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 12px rgba(255,102,196,0.25);
   }
 
   .sub{
@@ -169,11 +171,11 @@
 
   /* floating motion for each shown line */
   .float {
-    animation: floatMove 6s ease-in-out infinite;
+    animation: floatMove 8s ease-in-out infinite;
   }
   @keyframes floatMove{
     0%{ transform: translateY(0px) translateX(0px); }
-    50%{ transform: translateY(-8px) translateX(4px); }
+    50%{ transform: translateY(-10px) translateX(5px); }
     100%{ transform: translateY(0px) translateX(0px); }
   }
 
@@ -184,7 +186,6 @@
     backdrop-filter: blur(4px);
   }
 
-  /* small mobile tweaks */
   @media (max-width:420px){
     .login-card{ width:320px; padding:20px; }
     .line{ font-size:16px; }
@@ -218,21 +219,15 @@
 <script>
 /* =========================
    Background: particles + lines
-   - canvas id bgCanvas
-   - mousemove creates trailing points
-   - click spawns a burst
    ========================= */
 (function(){
-
   const canvas = document.getElementById('bgCanvas');
   const ctx = canvas.getContext('2d');
   let W = canvas.width = innerWidth;
   let H = canvas.height = innerHeight;
 
-  // particles that drift
   const particles = [];
   const maxP = 140;
-
   function rnd(min,max){ return Math.random()*(max-min)+min; }
 
   class Particle{
@@ -242,14 +237,11 @@
       this.r = rnd(0.6,2.6);
       this.vx = rnd(-0.25,0.25);
       this.vy = rnd(-0.25,0.25);
-      this.h = rnd(180,320); // hue for color variety
+      this.h = rnd(180,320);
       this.life = 200 + Math.random()*400;
     }
     step(){
-      this.x += this.vx;
-      this.y += this.vy;
-      this.vx += rnd(-0.02,0.02);
-      this.vy += rnd(-0.02,0.02);
+      this.x += this.vx; this.y += this.vy;
       this.vx *= 0.995; this.vy *= 0.995;
       if(this.x < 0) this.x = W;
       if(this.x > W) this.x = 0;
@@ -269,138 +261,56 @@
     }
   }
 
-  // dynamic lines emitted by mouse/traces
   const traces = [];
-
   class Trace {
     constructor(x,y,dx,dy,life){
-      this.x=x; this.y=y; this.dx=dx; this.dy=dy; this.life = life||80;
+      this.x=x; this.y=y; this.dx=dx; this.dy=dy; this.life = life||100;
       this.h = rnd(280, 340);
       this.w = rnd(0.6,1.6);
     }
-    step(){
-      this.x += this.dx; this.y += this.dy;
-      // slight curvature toward center for aesthetics
-      const cx = W/2, cy = H/2;
-      this.dx += (cx - this.x) * 0.0006;
-      this.dy += (cy - this.y) * 0.0006;
-      this.life--;
-    }
+    step(){ this.x+=this.dx; this.y+=this.dy; this.life--; }
     draw(){
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
-      // draw short line towards velocity direction
       ctx.lineTo(this.x - this.dx*3, this.y - this.dy*3);
-      ctx.strokeStyle = `hsla(${this.h}, 95%, 62%, ${Math.max(0, this.life/120)})`;
+      ctx.strokeStyle = `hsla(${this.h},95%,62%,${Math.max(0,this.life/140)})`;
       ctx.lineWidth = this.w;
-      ctx.lineCap = 'round';
       ctx.stroke();
     }
   }
 
-  // initialize some particles
   for(let i=0;i<maxP;i++) particles.push(new Particle());
-
-  let mouse = {x:W/2, y:H/2, moved:false};
   window.addEventListener('mousemove', e=>{
-    mouse.x = e.clientX; mouse.y = e.clientY; mouse.moved = true;
-    // spawn small traces on move
-    for(let i=0;i<2;i++){
-      traces.push(new Trace(e.clientX + rnd(-2,2), e.clientY + rnd(-2,2), rnd(-1.6,1.6), rnd(-1.6,1.6), 90 + Math.random()*40));
-    }
+    for(let i=0;i<2;i++)
+      traces.push(new Trace(e.clientX, e.clientY, rnd(-1.2,1.2), rnd(-1.2,1.2), 120));
   });
-
   window.addEventListener('click', e=>{
-    // burst of traces
-    const count = 24 + Math.floor(Math.random()*28);
+    const count = 24+Math.random()*28;
     for(let i=0;i<count;i++){
       const a = Math.random()*Math.PI*2;
-      const s = 2 + Math.random()*8;
-      traces.push(new Trace(e.clientX, e.clientY, Math.cos(a)*s, Math.sin(a)*s, 120 + Math.random()*80));
-    }
-    // little particle cluster
-    for(let i=0;i<12;i++){
-      particles.push(new Particle(e.clientX + rnd(-40,40), e.clientY + rnd(-40,40)));
+      const s = 2+Math.random()*6;
+      traces.push(new Trace(e.clientX, e.clientY, Math.cos(a)*s, Math.sin(a)*s, 160));
     }
   });
-
-  // connect nearest traces with subtle lines
-  function connectTraces(){
-    const limit = traces.length;
-    for(let i=0;i<limit;i++){
-      for(let j=i+1;j<limit && j<i+8;j++){
-        const a = traces[i], b = traces[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const dist = Math.hypot(dx,dy);
-        if(dist < 120){
-          ctx.beginPath();
-          ctx.moveTo(a.x,a.y);
-          ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle = `rgba(200,120,200,${Math.max(0,0.12 - dist/1200)})`;
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
-        }
-      }
-    }
-  }
 
   function frame(){
-    // slight translucent overlay to create trailing
     ctx.fillStyle = 'rgba(3,3,12,0.22)';
     ctx.fillRect(0,0,W,H);
-
-    // very soft gradient to hint aurora base (animated by oscillating)
-    const g = ctx.createLinearGradient(0,0,0,H);
-    const t = Date.now()*0.00012;
-    g.addColorStop(0, `hsla(${220 + Math.sin(t)*20}, 85%, 10%, 0.06)`);
-    g.addColorStop(0.5, `hsla(${280 + Math.cos(t*1.3)*30}, 90%, 12%, 0.06)`);
-    g.addColorStop(1, `rgba(0,0,0,0)`);
-    ctx.fillStyle = g;
-    ctx.fillRect(0,0,W,H);
-
-    // particles
-    for(let i=particles.length-1;i>=0;i--){
-      const p = particles[i];
-      p.step();
-      p.draw();
-      if(p.life <= 0 || particles.length > 700) particles.splice(i,1);
-    }
-
-    // traces
-    for(let i=traces.length-1;i>=0;i--){
-      traces[i].step();
-      traces[i].draw();
-      if(traces[i].life <=0) traces.splice(i,1);
-    }
-
-    connectTraces();
-
+    for(let i=particles.length-1;i>=0;i--){particles[i].step();particles[i].draw();}
+    for(let i=traces.length-1;i>=0;i--){traces[i].step();traces[i].draw(); if(traces[i].life<=0)traces.splice(i,1);}
     requestAnimationFrame(frame);
   }
-
-  // resize
-  addEventListener('resize', ()=>{
-    W = canvas.width = innerWidth;
-    H = canvas.height = innerHeight;
-  });
-
+  addEventListener('resize', ()=>{W=canvas.width=innerWidth;H=canvas.height=innerHeight;});
   frame();
-
 })();
 
 /* =========================
-   Scene overlay: aurora animation + couple silhouette (canvas)
-   + poem reveal line-by-line floating
+   Poem slow reveal
    ========================= */
-
 (function(){
   const scene = document.getElementById('scene');
-  const sceneCanvas = document.getElementById('sceneCanvas');
-  const sctx = sceneCanvas.getContext('2d');
-  let W2 = sceneCanvas.width = innerWidth;
-  let H2 = sceneCanvas.height = innerHeight;
+  const poemWrap = document.getElementById('poemWrap');
 
-  // poem lines (user text)
   const poemText = `Feliz cuarto mes mi amor,
 contigo aprendí lo que
 significa amar de verdad,
@@ -409,317 +319,55 @@ lo que es tener hogar.
 Cada día contigo es
 un regalo increíble que
 atesoro en mi corazón,
-porque tú eres especial.
+porque tú eres especial.`.split('\n');
 
-Cuatro meses contigo parecen
-un sueño hermoso cumplido,
-un viaje lleno de
-sonrisas, abrazos y amor.
-
-Me haces sentir afortunado,
-me haces sentir amado,
-y me haces sentir
-que soy suficiente contigo.
-
-Gracias por tu ternura,
-por tu paciencia conmigo,
-por tu forma única
-de hacerme feliz siempre.
-
-Contigo quiero todo amor,
-mis días y mis
-noches, mis risas y
-lágrimas, mis sueños completos.
-
-Eres mi motivación diaria,
-mi alegría constante, mi
-abrazo favorito en el
-mundo y mi destino.
-
-Cuatro meses son solo
-el inicio de algo
-maravilloso que sigue creciendo,
-porque contigo todo fluye.
-
-Te prometo seguir cuidándote,
-seguir eligiéndote cada día,
-y amarte con todo
-lo que soy siempre.
-
-Eres mi sol brillante,
-mi refugio seguro, mi
-todo lo que siempre
-soñé tener contigo.
-
-Feliz aniversario amor mío,
-gracias por existir, gracias
-por elegirme y gracias
-por amarme tanto.`.split('\n');
-
-  // prepare poem container
-  const poemWrap = document.getElementById('poemWrap');
-
-  // draw aurora as layered sine waves with gradient overlay
-  let auroraLayers = [];
-  function createAurora(){
-    auroraLayers = [];
-    const count = 4;
-    for(let i=0;i<count;i++){
-      auroraLayers.push({
-        amp: 40 + i*18,
-        freq: 0.0025 + i*0.0012,
-        speed: 0.0008 + i*0.0006,
-        hue: 180 + i*40,
-        offset: i*120
-      });
-    }
-  }
-  createAurora();
-
-  // couple silhouette drawn by bezier-ish shapes (no images). We'll draw two abstract hugging shapes
-  function drawCouple(){
-    const cx = W2/2;
-    const cy = H2*0.62;
-    const scale = Math.min(W2, H2) * 0.12;
-
-    sctx.save();
-    sctx.translate(cx, cy);
-
-    // soft glow shadow
-    sctx.filter = 'blur(18px)';
-    sctx.fillStyle = 'rgba(255,150,210,0.06)';
-    sctx.beginPath();
-    sctx.ellipse(0, 10, scale*2.6, scale*1.1, 0, 0, Math.PI*2);
-    sctx.fill();
-    sctx.filter = 'none';
-
-    // left person (back)
-    sctx.fillStyle = 'rgba(12,12,20,0.95)';
-    sctx.beginPath();
-    sctx.moveTo(-scale*0.8, -scale*0.6);
-    sctx.bezierCurveTo(-scale*2.2, -scale*2.2, -scale*2.5, scale*0.4, -scale*0.4, scale*1.6);
-    sctx.bezierCurveTo(-scale*0.2, scale*1.9, -scale*0.1, scale*2.0, scale*0.6, scale*1.7);
-    sctx.bezierCurveTo(scale*1.2, scale*1.4, scale*0.8, -scale*0.8, -scale*0.8, -scale*0.6);
-    sctx.fill();
-
-    // right person (front)
-    sctx.beginPath();
-    sctx.moveTo(scale*0.8, -scale*0.6);
-    sctx.bezierCurveTo(scale*2.2, -scale*2.2, scale*2.8, scale*0.4, scale*0.5, scale*1.7);
-    sctx.bezierCurveTo(scale*0.3, scale*2.0, scale*0.15, scale*2.05, -scale*0.8, scale*1.6);
-    sctx.bezierCurveTo(-scale*1.4, scale*1.3, -scale*0.9, -scale*0.9, scale*0.8, -scale*0.6);
-    sctx.fill();
-
-    // hair/head left
-    sctx.beginPath();
-    sctx.fillStyle = 'rgba(10,10,14,0.98)';
-    sctx.ellipse(-scale*0.9, -scale*1.6, scale*0.7, scale*0.9, -0.2, 0, Math.PI*2);
-    sctx.fill();
-
-    // head right
-    sctx.beginPath();
-    sctx.ellipse(scale*0.9, -scale*1.7, scale*0.68, scale*0.9, 0.2, 0, Math.PI*2);
-    sctx.fill();
-
-    // small highlight outline (soft)
-    sctx.globalCompositeOperation = 'lighter';
-    const grad = sctx.createLinearGradient(-scale*2, -scale*3, scale*2, scale*3);
-    grad.addColorStop(0, 'rgba(255,140,200,0.02)');
-    grad.addColorStop(1, 'rgba(0,220,200,0.02)');
-    sctx.fillStyle = grad;
-    sctx.beginPath();
-    sctx.ellipse(0, -scale*0.6, scale*1.9, scale*2.3, 0, 0, Math.PI*2);
-    sctx.fill();
-    sctx.globalCompositeOperation = 'source-over';
-
-    sctx.restore();
-  }
-
-  // stars layer for scene (canvas drawn)
-  let starsScene = [];
-  function createStarsScene(){
-    starsScene = [];
-    const total = 320;
-    for(let i=0;i<total;i++){
-      starsScene.push({
-        x: Math.random()*W2,
-        y: Math.random()*H2*0.8,
-        r: Math.random()*1.8+0.3,
-        a: Math.random()*1,
-        tw: 0.02+Math.random()*0.06
-      });
-    }
-  }
-
-  // animate aurora + stars + couple
-  let t0 = Date.now();
-  function sceneFrame(){
-    sctx.clearRect(0,0,W2,H2);
-
-    // soft vignette background
-    const bg = sctx.createLinearGradient(0,0,0,H2);
-    bg.addColorStop(0, '#02102a');
-    bg.addColorStop(1, '#000');
-    sctx.fillStyle = bg;
-    sctx.fillRect(0,0,W2,H2);
-
-    // stars
-    for(const s of starsScene){
-      s.a += (Math.random()*0.02-0.01);
-      s.a = Math.max(0.2, Math.min(1, s.a));
-      sctx.globalAlpha = s.a;
-      sctx.fillStyle = 'rgba(255,255,255,0.95)';
-      sctx.beginPath();
-      sctx.arc(s.x, s.y, s.r,0,Math.PI*2);
-      sctx.fill();
-    }
-    sctx.globalAlpha = 1;
-
-    // aurora layers
-    const time = (Date.now()-t0);
-    auroraLayers.forEach((L, idx)=>{
-      sctx.save();
-      sctx.globalCompositeOperation = 'lighter';
-      const grad = sctx.createLinearGradient(0, H2*0.2 + idx*10, 0, H2);
-      const hue = L.hue;
-      grad.addColorStop(0, `hsla(${hue},95%,62%,${0.08})`);
-      grad.addColorStop(0.5, `hsla(${hue+40},95%,62%,${0.06})`);
-      grad.addColorStop(1, `rgba(0,0,0,0)`);
-      sctx.fillStyle = grad;
-
-      // draw a wavy ribbon
-      sctx.beginPath();
-      const amplitude = L.amp + Math.sin(time * L.speed) * (L.amp*0.45);
-      const freq = L.freq;
-      const offset = L.offset;
-      sctx.moveTo(-300, H2*0.18 + Math.sin(offset*0.02 + time*L.speed)*amplitude);
-      for(let x=-300;x<=W2+300;x+=12){
-        const y = H2*0.18 + Math.sin((x*freq) + time*L.speed + offset*0.006) * amplitude;
-        sctx.lineTo(x, y);
-      }
-      sctx.lineTo(W2+400, H2+400);
-      sctx.lineTo(-400, H2+400);
-      sctx.closePath();
-      sctx.fill();
-      sctx.restore();
-    });
-
-    // draw couple silhouette centered bottom
-    drawCouple();
-
-    requestAnimationFrame(sceneFrame);
-  }
-
-  // handle window resize
-  window.addEventListener('resize', ()=>{
-    W2 = sceneCanvas.width = innerWidth;
-    H2 = sceneCanvas.height = innerHeight;
-    createStarsScene();
-  });
-
-  createStarsScene();
-  sceneFrame();
-
-  // function to reveal poem lines one by one with movement
   function revealPoem(){
-    poemWrap.innerHTML = ''; // clear
-    // compute starting delay and base positions
-    const baseDelay = 0.6;
-    let delayAcc = 0;
-    poemText.forEach((ln, idx) => {
-      const div = document.createElement('div');
-      div.className = 'line';
-      // blank lines become small spacing
-      div.textContent = ln.trim();
+    poemWrap.innerHTML='';
+    poemText.forEach((ln, idx)=>{
+      const div=document.createElement('div');
+      div.className='line';
+      div.textContent=ln.trim();
       poemWrap.appendChild(div);
-
-      // staggered show
       setTimeout(()=>{
-        div.style.transition = 'opacity 600ms ease, transform 700ms cubic-bezier(.2,.9,.2,1)';
-        div.style.opacity = '1';
-        div.style.transform = 'translateY(0) scale(1)';
-        // add floating effect with slight random phase
+        div.style.transition='opacity 1200ms ease, transform 1200ms ease';
+        div.style.opacity='1';
+        div.style.transform='translateY(0) scale(1)';
         div.classList.add('float');
-        // gentle horizontal drift using CSS variable + JS animation frame
-        const driftX = (Math.random()*36 - 18);
-        let phase = Math.random()*Math.PI*2;
-        // small continuous transform
-        let tId = null;
-        function frame(){
-          phase += 0.008 + Math.random()*0.006;
-          const x = Math.sin(phase) * (driftX * 0.6);
-          const y = Math.cos(phase*0.6) * 3;
-          div.style.transform = `translateY(${y}px) translateX(${x}px)`;
-          tId = requestAnimationFrame(frame);
-        }
-        // stop after long time? keep it subtle infinite; store id on element
-        div._raf = tId = requestAnimationFrame(frame);
-      }, baseDelay*1000 + delayAcc*1000 + idx*300);
-
-      // small incremental delay so lines come in rhythm
-      delayAcc += 0.06;
+      }, idx*1800); // más lento
     });
   }
 
-  // Expose a function to show scene (called by login)
-  window.showRomanticScene = function(){
-    // reset and show scene
-    scene.style.display = 'flex';
-    scene.setAttribute('aria-hidden','false');
-
-    // make stars twinkle slightly faster
-    createStarsScene();
-    // reveal poem after a little lead-in
-    setTimeout(()=> revealPoem(), 700);
-    // add gentle entrance animation
-    scene.style.opacity = 0;
-    scene.animate([{opacity:0, transform:'scale(1.02)'}, {opacity:1, transform:'scale(1)'}], {duration:700, fill:'forwards', easing:'cubic-bezier(.2,.9,.2,1)'});
+  window.showRomanticScene=function(){
+    scene.style.display='flex';
+    setTimeout(()=> revealPoem(), 1000);
   };
-
 })();
 
 /* =========================
-   Login interactions & password logic
+   Login logic
    ========================= */
 (function(){
-  const pwInput = document.getElementById('pw');
-  const btn = document.getElementById('enterBtn');
-  const error = document.getElementById('errorMsg');
-  const loginCard = document.getElementById('loginCard');
+  const pwInput=document.getElementById('pw');
+  const btn=document.getElementById('enterBtn');
+  const error=document.getElementById('errorMsg');
+  const loginCard=document.getElementById('loginCard');
 
   function showError(){
-    error.style.display = 'block';
-    error.animate([{opacity:0},{opacity:1}], {duration:300, fill:'forwards'});
+    error.style.display='block';
     setTimeout(()=> error.style.display='none', 2400);
   }
 
   function onSubmit(){
-    const val = pwInput.value.trim();
-    if(val === '3/10/25'){
-      // hide login card with flourish
-      loginCard.animate([{opacity:1, transform:'translate(-50%,-50%) scale(1)'}, {opacity:0, transform:'translate(-50%,-30%) scale(0.96)'}], {duration:420, easing:'cubic-bezier(.2,.9,.2,1)', fill:'forwards'});
-      setTimeout(()=> loginCard.style.display = 'none', 420);
-      // show romantic scene
+    if(pwInput.value.trim()==='3/10/25'){
+      loginCard.style.display='none';
       window.showRomanticScene();
-    } else {
-      showError();
-      // small shake
-      loginCard.animate([{transform:'translate(-50%,-50%) rotate(0deg)'},{transform:'translate(-50%,-50%) rotate(-1.6deg)'},{transform:'translate(-50%,-50%) rotate(1.6deg)'},{transform:'translate(-50%,-50%) rotate(0deg)'}], {duration:420, easing:'ease-in-out'});
-    }
+    } else { showError(); }
   }
 
-  btn.addEventListener('click', onSubmit);
-  pwInput.addEventListener('keydown', e=>{
-    if(e.key === 'Enter') { onSubmit(); e.preventDefault(); }
-  });
-
-  // small UX: focus and subtle highlight on load
-  setTimeout(()=> pwInput.focus(), 420);
-
-  // Prevent autocomplete annoyances
-  pwInput.autocomplete = 'off';
+  btn.addEventListener('click',onSubmit);
+  pwInput.addEventListener('keydown',e=>{if(e.key==='Enter')onSubmit();});
+  setTimeout(()=>pwInput.focus(),500);
 })();
-
 </script>
 </body>
 </html>
