@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 Meses</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      font-family: "Segoe UI", sans-serif;
+      overflow: hidden;
+      color: white;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    }
+
+    p {
+      font-size: 1.3em;
+      max-width: 600px;
+      text-align: center;
+      line-height: 1.6em;
+      margin-bottom: 20px;
+    }
+
+    .corazon {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: flotar 6s infinite;
+    }
+    .corazon::before, .corazon::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+    .corazon::before { top: -10px; left: 0; }
+    .corazon::after { left: -10px; top: 0; }
+
+    @keyframes flotar {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-600px) rotate(45deg); opacity: 0; }
+    }
+
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      background: white;
+      color: #e75480;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ffd6e0;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>💖 4 Meses 💖</h1>
+  <p>
+    Hoy celebramos 4 meses juntos, mi amor.  
+    Cada día contigo es un regalo,  
+    un recuerdo hermoso y una razón más  
+    para sonreír. Gracias por ser  
+    la persona más increíble de mi vida.  
+  </p>
+  <button onclick="alert('Te amo con todo mi corazón, Saori 💕')">Haz clic aquí</button>
+
+  <script>
+    function crearCorazon() {
+      const corazon = document.createElement("div");
+      corazon.className = "corazon";
+      corazon.style.left = Math.random() * window.innerWidth + "px";
+      corazon.style.top = window.innerHeight + "px";
+      document.body.appendChild(corazon);
+      setTimeout(() => corazon.remove(), 6000);
+    }
+    setInterval(crearCorazon, 400);
+  </script>
+</body>
+</html>
